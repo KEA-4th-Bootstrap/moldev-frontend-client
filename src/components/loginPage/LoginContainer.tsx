@@ -22,8 +22,10 @@ const LoginContainer = ({
     setEmail,
     password,
     setPassword,
-    isError,
-  } = useLogin();
+    onLoginClick,
+    emailError,
+    passwordError,
+  } = useLogin(onClose);
   return (
     <>
       {isJoinOpen ? (
@@ -53,8 +55,8 @@ const LoginContainer = ({
               label="이메일"
               type="email"
               placeholder="이메일을 입력해주세요"
-              isError={isError}
-              errorMsg="이메일 형식이 아닙니다."
+              isError={emailError !== ''}
+              errorMsg={emailError}
             />
             <InputContainer
               value={password}
@@ -62,14 +64,14 @@ const LoginContainer = ({
               label="비밀번호"
               type="password"
               placeholder="비밀번호를 입력해주세요"
-              isError={isError}
-              errorMsg="비밀번호가 일치하지 않습니다."
+              isError={passwordError !== ''}
+              errorMsg={passwordError}
             />
           </div>
           <div className="w-full flex flex-col items-center justify-center gap-y-10">
             <RectButton
               text="로그인"
-              onClick={() => {}}
+              onClick={onLoginClick}
               w={'100%'}
               h={'56px'}
               type="fill"
