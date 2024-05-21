@@ -1,25 +1,24 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import MainPage from './pages/MainPage';
+import MoldevPage from './pages/MoldevPage';
+import CategoryPage from './pages/CategoryPage';
+import PostPage from './pages/PostPage';
+import WritePage from './pages/WritePage';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<MainPage />}>
+          <Route path=":moldevId/:postId" element={<PostPage />} />
+        </Route>
+        <Route path="/write" element={<WritePage />} />
+        <Route path="/:moldevId" element={<MoldevPage />}>
+          <Route path=":postId" element={<PostPage />} />
+          <Route path="category/:categoryName" element={<CategoryPage />} />
+        </Route>
+      </Routes>
+    </Router>
   );
 }
 
