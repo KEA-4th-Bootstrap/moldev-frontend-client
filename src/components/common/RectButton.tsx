@@ -55,7 +55,14 @@ const RectButton = ({
         },
       ]}
       disabled={!isAble}
-      onClick={isAble ? onClick : () => {}}
+      onClick={
+        isAble
+          ? (e) => {
+              e.preventDefault();
+              onClick();
+            }
+          : () => {}
+      }
     >
       {text}
     </button>
