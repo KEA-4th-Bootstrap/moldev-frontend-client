@@ -1,19 +1,18 @@
 import { useEffect, useState } from 'react';
 import usePost from './usePost';
 import { ContentState, EditorState } from 'draft-js';
-import { commentType, recentListItemType } from '../../data/type';
+import { recentListItemType } from '../../data/type';
 import htmlToDraft from 'html-to-draftjs';
-import { dummyCommetList, dummyRecentList } from '../../data/dummy';
+import { dummyRecentList } from '../../data/dummy';
 
-export const usePostContainer = (postId: number) => {
-  const post = usePost(postId);
+export const usePostContainer = (moldevId: string, postId: number) => {
+  const { post, postIsLoading, postIsError } = usePost(moldevId, postId);
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [recentList, setRecentList] = useState<recentListItemType[]>([]);
-  const [commentList, setCommentList] = useState<commentType[]>([]);
 
   useEffect(() => {
     if (!post) return;
-    const blocksFromHtml = htmlToDraft(post.content);
+    const blocksFromHtml = htmlToDraft(post.postInfo.content);
     if (blocksFromHtml) {
       const { contentBlocks, entityMap } = blocksFromHtml;
       console.log(contentBlocks, entityMap);
@@ -27,8 +26,14 @@ export const usePostContainer = (postId: number) => {
 
   useEffect(() => {
     setRecentList(dummyRecentList);
-    setCommentList(dummyCommetList);
   }, []);
 
-  return { post, editorState, recentList, commentList, setEditorState };
+  return {
+    post,
+    postIsLoading,
+    postIsError,
+    editorState,
+    recentList,
+    setEditorState,
+  };
 };
