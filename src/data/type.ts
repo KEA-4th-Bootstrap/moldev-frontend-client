@@ -4,8 +4,11 @@ export interface ItemDimensions {
 }
 
 export type lineHeaderType = 'post' | 'island';
+
 export type buttonType = 'fill' | 'stroke' | 'disable' | 'incomplete';
+
 export type searchOptionType = 'post' | 'island';
+
 export type Toggles = {
   [BOLD: string]: boolean;
   ITALIC: boolean;
@@ -29,25 +32,34 @@ export type sideType =
   | 'recommend'
   | 'onboarding';
 
-export type categoryType = 'activity' | 'project' | 'awards' | 'trouble';
+export type categoryType = 'ACTIVITY' | 'PROJECT' | 'AWARDS' | 'TROUBLE';
 export const categoryToKorean = {
-  activity: '대외활동',
-  project: '프로젝트',
-  awards: '수상이력',
-  trouble: '트러블슈팅',
+  ACTIVITY: '대외활동',
+  PROJECT: '프로젝트',
+  AWARDS: '수상이력',
+  TROUBLE: '트러블슈팅',
 };
 
 export type postListItemType = {
-  moldevId: string;
-  id: number;
-  title: string;
-  content: string;
-  createdAt: string;
-  visit: number;
+  postInfo: postListItemPostType;
+  userInfo: postListItemUserType;
+};
+export type postListItemPostType = {
   category: categoryType;
-  img: string;
-  userName: string;
-  userImg: string;
+  content: string;
+  id: number;
+  lastModifiedDate: string;
+  moldevId: string;
+  thumbnail: string;
+  title: string;
+  viewCount: number;
+};
+
+export type postListItemUserType = {
+  islandName: string;
+  moldevId: string;
+  nickname: string;
+  profileImgUrl: string;
 };
 
 export type islandListItemType = {
@@ -83,21 +95,37 @@ export type recentListItemType = {
 };
 
 export type commentType = {
-  commentId: number;
+  commentInfo: commentItemType;
+  userInfo: postListItemUserType;
+};
+
+export type commentItemType = {
+  id: string;
+  memberId: number;
+  postId: number;
   content: string;
+  replyCount: number;
   createdAt: string;
-  userImg: string;
-  userName: string;
-  islandName: string;
-  reply: commentType[];
+};
+
+export type replyType = {
+  replyInfo: replyItemType;
+  userInfo: postListItemUserType;
+};
+
+export type replyItemType = {
+  id: string;
+  memberId: number;
+  content: string;
+  parentsId: string;
+  createdAt: string;
 };
 
 export type joinType = {
-  isMarketing: boolean;
+  isMarketingAgree: boolean;
   email: string;
   password: string;
   moldevId: string;
-  userName: string;
+  nickname: string;
   islandName: string;
-  profileImage: string | ArrayBuffer;
 };
