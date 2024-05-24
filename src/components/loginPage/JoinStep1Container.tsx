@@ -1,8 +1,10 @@
 import React from 'react';
 import useJoin from '../../hooks/loginPage/useJoin';
-import JoinInputContainer from './JoinInputContainer';
+import JoinAuthInputContainer from './JoinAuthInputContainer';
 import RectButton from '../common/RectButton';
 import PasswordInputContainer from './PasswordInputContainer';
+import JoinEmailInputContainer from './JoinEmailInputContainer';
+import JoinInputContainer from './JoinInputContainer';
 
 const JoinStep1Container = ({
   hookReturns,
@@ -14,32 +16,28 @@ const JoinStep1Container = ({
   return (
     <>
       <div className="w-full flex flex-col gap-y-16">
-        <JoinInputContainer
+        <JoinEmailInputContainer
           label="이메일"
           value={email}
           name="email"
           onChange={hookReturns.onChange}
-          type="email"
-          placeholder="이메일을 입력해주세요"
-          errorMessage={hookReturns.error}
-          isError={hookReturns.isError}
-          buttonText="인증번호 전송"
-          buttonClick={() => {
-            hookReturns.setIsEmailSend(true);
-            console.log('인증번호 전송');
-          }}
-          isAble={email.length > 0}
+          isError={hookReturns.isEmailError}
+          isSended={hookReturns.isEmailSend}
+          footerMessage={hookReturns.emailFooter}
+          buttonClick={hookReturns.onClickEmailSend}
+          isAble={email.length > 0 && !hookReturns.isEmailSend}
         />
         {hookReturns.isEmailSend && (
-          <JoinInputContainer
+          <JoinAuthInputContainer
             label="인증번호"
-            value={hookReturns.authNumber}
+            value={hookReturns.auth}
             name="authNumber"
-            onChange={(e) => hookReturns.setAuthNumber(e.target.value)}
-            type="text"
-            placeholder="인증번호를 입력해주세요"
-            errorMessage={hookReturns.error}
-            isError={hookReturns.isError}
+            onChange={(e) => hookReturns.setAuth(e.target.value)}
+            isError={hookReturns.isAuthError}
+            isVerified={hookReturns.isAuthVerified}
+            errorMessage={hookReturns.authError}
+            buttonClick={hookReturns.onClickAuthSubmit}
+            isAble={hookReturns.auth.length > 0}
             remainTime={hookReturns.remainTime}
           />
         )}
@@ -48,8 +46,8 @@ const JoinStep1Container = ({
           value={password}
           name="password"
           onChange={hookReturns.onChange}
-          isError={hookReturns.isError}
-          errorMessage={hookReturns.error}
+          isError={hookReturns.isPasswordError}
+          errorMessage={'비밀번호 조건을 확인해주세요.'}
           options={[
             { isComplete: password.length >= 8, text: '8자 이상' },
             {
@@ -72,8 +70,11 @@ const JoinStep1Container = ({
           onChange={(e) => hookReturns.setPasswordCheck(e.target.value)}
           type="password"
           placeholder="비밀번호를 다시 입력해주세요"
-          isError={hookReturns.isError}
-          errorMessage={hookReturns.error}
+          isError={
+            hookReturns.passwordCheck !== '' &&
+            password !== hookReturns.passwordCheck
+          }
+          errorMessage={'비밀번호가 일치하지 않습니다.'}
         />
       </div>
       <RectButton
