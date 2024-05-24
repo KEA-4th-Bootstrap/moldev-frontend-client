@@ -238,6 +238,7 @@ module.exports = {
         bounce: 'bounce 1s infinite',
         grow: 'grow 0.3s',
         growReverse: 'growReverse 0.3s',
+        pulseFast: 'pulse 0.8s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
     },
   },
