@@ -32,9 +32,10 @@ export const postSignupApi = async (
       signUpRequestDto: new Blob([JSON.stringify(form)], {
         type: 'application/json',
       }),
-      profileImage: profileImage
-        ? new FormData().append('profileImage', profileImage)
-        : null,
+      profileImage: profileImage,
+      // profileImage: profileImage
+      //   ? new FormData().append('profileImage', profileImage)
+      //   : null,
     },
     {
       headers: {
