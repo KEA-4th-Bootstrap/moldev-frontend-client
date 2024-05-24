@@ -8,14 +8,15 @@ const JoinStep3Container = ({
 }: {
   hookReturns: ReturnType<typeof useJoin>;
 }) => {
-  const { form, inputRef, onUpload, onUploadImageButtonClick } = hookReturns;
-  const { userName, profileImage } = form;
+  const { form, inputRef, onUpload, onUploadImageButtonClick, preview } =
+    hookReturns;
+  const { nickname } = form;
   return (
     <>
       <div className="w-full pt-30 flex flex-col items-center justify-start gap-y-[60px]">
         <div className="w-full flex flex-col items-start justify-center gap-y-4 text-20">
           <div>
-            <span className="font-semibold">{userName}</span> 님,
+            <span className="font-semibold">{nickname}</span> 님,
           </div>
           <div>프로필 사진을 등록해보세요.</div>
         </div>
@@ -23,7 +24,7 @@ const JoinStep3Container = ({
           <div className="w-[200px] h-[200px] flex items-center justify-center relative">
             <img
               className="w-full h-full object-cover rounded-full"
-              src={profileImage as string}
+              src={preview}
               alt="empty"
             />
             <Edit
