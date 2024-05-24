@@ -1,15 +1,15 @@
 import React from 'react';
 import useJoin from '../../hooks/loginPage/useJoin';
 import RectButton from '../common/RectButton';
-import JoinInputContainer from './JoinInputContainer';
 import RoundButton from '../common/RoundButton';
+import JoinInputContainer from './JoinInputContainer';
 
 const JoinStep2Container = ({
   hookReturns,
 }: {
   hookReturns: ReturnType<typeof useJoin>;
 }) => {
-  const { moldevId, userName, islandName } = hookReturns.form;
+  const { moldevId, nickname, islandName } = hookReturns.form;
   return (
     <>
       <div className="w-full flex flex-col gap-y-16">
@@ -29,28 +29,28 @@ const JoinStep2Container = ({
                 type="fill"
                 text="중복확인"
                 fontSize={14}
-                isAble={hookReturns.checkNameIsAbleToConfirm()}
-                onClick={() => hookReturns.setCheckName(true)}
+                isAble={!hookReturns.isMoldevIdVerified && moldevId.length > 0}
+                onClick={hookReturns.onClickMoldevIdCheck}
                 w={'112px'}
                 h={'35px'}
               />
             </div>
           </div>
           <div
-            className={`w-full font-medium text-14 text-negative ${hookReturns.isError ? 'visible' : 'invisible'}`}
+            className={`w-full h-[20px] font-medium text-14 ${hookReturns.isMoldevIdDuplicated ? 'text-negative' : 'text-main'}`}
           >
-            {hookReturns.error}
+            {hookReturns.moldevIdFooter}
           </div>
         </div>
         <JoinInputContainer
           label="유저명"
-          value={userName}
-          name="userName"
+          value={nickname}
+          name="nickname"
           onChange={hookReturns.onChange}
           type="text"
           placeholder="유저명을 입력해주세요"
-          isError={hookReturns.isError}
-          errorMessage={hookReturns.error}
+          isError={nickname === ''}
+          errorMessage={'유저명을 입력해주세요'}
         />
         <JoinInputContainer
           label="섬 이름"
@@ -59,8 +59,8 @@ const JoinStep2Container = ({
           onChange={hookReturns.onChange}
           type="text"
           placeholder="섬 이름을 입력해주세요"
-          isError={hookReturns.isError}
-          errorMessage={hookReturns.error}
+          isError={islandName === ''}
+          errorMessage={'섬 이름을 입력해주세요'}
         />
       </div>
       <RectButton
@@ -69,7 +69,11 @@ const JoinStep2Container = ({
         onClick={() => {
           hookReturns.next();
         }}
-        isAble={true}
+        isAble={
+          hookReturns.isMoldevIdVerified &&
+          nickname.length > 0 &&
+          islandName.length > 0
+        }
         w={'100%'}
         h={'53px'}
       />

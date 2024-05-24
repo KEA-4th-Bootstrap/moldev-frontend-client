@@ -29,15 +29,9 @@ const FindPasswordContainer = ({
       {hookReturns.isCompleted ? (
         <FindPasswordCompleted onClose={onClose} />
       ) : hookReturns.isChangingStep ? (
-        <FindPasswordChangeContainer
-          handleNext={() => hookReturns.setIsCompleted(true)}
-          hookReturns={hookReturns}
-        />
+        <FindPasswordChangeContainer hookReturns={hookReturns} />
       ) : (
-        <FindPasswordAuthContainer
-          handleNext={() => hookReturns.setIsChangingStep(true)}
-          hookReturns={hookReturns}
-        />
+        <FindPasswordAuthContainer hookReturns={hookReturns} />
       )}
     </div>
   );

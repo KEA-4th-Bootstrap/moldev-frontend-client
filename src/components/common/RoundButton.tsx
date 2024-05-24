@@ -54,7 +54,16 @@ const RoundButton = ({
         },
       ]}
       disabled={!isAble}
-      onClick={isAble ? onClick : () => {}}
+      onClick={
+        isSubmit
+          ? undefined
+          : isAble
+            ? (e) => {
+                e.preventDefault();
+                onClick();
+              }
+            : () => {}
+      }
       type={isSubmit ? 'submit' : 'button'}
     >
       {text}

@@ -8,12 +8,13 @@ import { ReactComponent as Recommend } from '../../assets/icons/icon_user_search
 import { ReactComponent as Login } from '../../assets/icons/icon_login.svg';
 import { ReactComponent as Logout } from '../../assets/icons/icon_logout.svg';
 import { ReactComponent as Onboarding } from '../../assets/icons/icon_question.svg';
+import useAuthStore from '../../store/useAuthStore';
 
 const SideButtonListContainer = ({
   isLogin,
   setClicked,
   setIsLoginOpen,
-  setIsLogoutOpen,
+  // setIsLogoutOpen,
   setIsMyPageOpen,
 }: {
   isLogin: boolean;
@@ -22,6 +23,7 @@ const SideButtonListContainer = ({
   setIsLogoutOpen: () => void;
   setIsMyPageOpen: () => void;
 }) => {
+  const { logout } = useAuthStore();
   return (
     <div className="shrink-0 h-full px-16 py-30 flex flex-col justify-between items-center shadow-right z-10">
       <div className="flex flex-col justify-start items-center gap-y-24">
@@ -90,7 +92,7 @@ const SideButtonListContainer = ({
           className="cursor-pointer hover:scale-110"
           width={28}
           height={28}
-          onClick={setIsLogoutOpen}
+          onClick={logout}
         />
       ) : (
         <Onboarding

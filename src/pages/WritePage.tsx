@@ -97,12 +97,12 @@ const WritePage = () => {
                 </div>
                 <div className="w-full flex items-center justify-start gap-x-10">
                   <CheckMain
-                    className={`${category === 'project' ? 'visible' : 'invisible'}`}
+                    className={`${category === 'PROJECT' ? 'visible' : 'invisible'}`}
                   />
                   <div
-                    className={`${category === 'project' ? 'font-semibold text-black' : 'text-gray-500'} cursor-pointer`}
+                    className={`${category === 'PROJECT' ? 'font-semibold text-black' : 'text-gray-500'} cursor-pointer`}
                     onClick={() => {
-                      setCategory('project');
+                      setCategory('PROJECT');
                       setIsCategoryOpen(false);
                     }}
                   >
@@ -111,12 +111,12 @@ const WritePage = () => {
                 </div>
                 <div className="w-full flex items-center justify-start gap-x-10">
                   <CheckMain
-                    className={`${category === 'activity' ? 'visible' : 'invisible'}`}
+                    className={`${category === 'ACTIVITY' ? 'visible' : 'invisible'}`}
                   />
                   <div
-                    className={`${category === 'activity' ? 'font-semibold text-black' : 'text-gray-500'} cursor-pointer`}
+                    className={`${category === 'ACTIVITY' ? 'font-semibold text-black' : 'text-gray-500'} cursor-pointer`}
                     onClick={() => {
-                      setCategory('activity');
+                      setCategory('ACTIVITY');
                       setIsCategoryOpen(false);
                     }}
                   >
@@ -125,12 +125,12 @@ const WritePage = () => {
                 </div>
                 <div className="w-full flex items-center justify-start gap-x-10">
                   <CheckMain
-                    className={`${category === 'awards' ? 'visible' : 'invisible'}`}
+                    className={`${category === 'AWARDS' ? 'visible' : 'invisible'}`}
                   />
                   <div
-                    className={`${category === 'awards' ? 'font-semibold text-black' : 'text-gray-500'} cursor-pointer`}
+                    className={`${category === 'AWARDS' ? 'font-semibold text-black' : 'text-gray-500'} cursor-pointer`}
                     onClick={() => {
-                      setCategory('awards');
+                      setCategory('AWARDS');
                       setIsCategoryOpen(false);
                     }}
                   >
@@ -139,12 +139,12 @@ const WritePage = () => {
                 </div>
                 <div className="w-full flex items-center justify-start gap-x-10">
                   <CheckMain
-                    className={`${category === 'trouble' ? 'visible' : 'invisible'}`}
+                    className={`${category === 'TROUBLE' ? 'visible' : 'invisible'}`}
                   />
                   <div
-                    className={`${category === 'trouble' ? 'font-semibold text-black' : 'text-gray-500'} cursor-pointer`}
+                    className={`${category === 'TROUBLE' ? 'font-semibold text-black' : 'text-gray-500'} cursor-pointer`}
                     onClick={() => {
-                      setCategory('trouble');
+                      setCategory('TROUBLE');
                       setIsCategoryOpen(false);
                     }}
                   >

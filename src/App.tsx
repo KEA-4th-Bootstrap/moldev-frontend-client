@@ -4,8 +4,18 @@ import MoldevPage from './pages/MoldevPage';
 import CategoryPage from './pages/CategoryPage';
 import PostPage from './pages/PostPage';
 import WritePage from './pages/WritePage';
+import { useEffect } from 'react';
+import useAuthStore from './store/useAuthStore';
 
 function App() {
+  const { isLoggedIn } = useAuthStore();
+
+  useEffect(() => {
+    if (!isLoggedIn && window.location.pathname === '/write') {
+      window.location.href = '/';
+    }
+  }, [isLoggedIn]);
+
   return (
     <Router>
       <Routes>

@@ -12,14 +12,14 @@ const CategoryPage = () => {
         isShow={childIsShow}
         category={
           categoryName === 'activity'
-            ? 'activity'
+            ? 'ACTIVITY'
             : categoryName === 'project'
-              ? 'project'
+              ? 'PROJECT'
               : categoryName === 'awards'
-                ? 'awards'
+                ? 'AWARDS'
                 : categoryName === 'trouble'
-                  ? 'trouble'
-                  : 'activity'
+                  ? 'TROUBLE'
+                  : 'ACTIVITY'
         }
       />
     </ModalBackground>

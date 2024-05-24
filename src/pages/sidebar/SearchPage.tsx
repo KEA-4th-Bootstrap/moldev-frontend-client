@@ -64,11 +64,14 @@ const SearchPage = () => {
               postList
                 .slice(0, 3)
                 .map((post) => (
-                  <SearchResultPostContainer key={post.id} item={post} />
+                  <SearchResultPostContainer
+                    key={post.postInfo.id}
+                    item={post}
+                  />
                 ))
             ) : (
               postList.map((post) => (
-                <SearchResultPostContainer key={post.id} item={post} />
+                <SearchResultPostContainer key={post.postInfo.id} item={post} />
               ))
             )
           ) : (

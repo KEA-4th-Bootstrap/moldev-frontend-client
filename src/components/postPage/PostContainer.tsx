@@ -8,16 +8,29 @@ import { ReactComponent as Next } from '../../assets/icons/icon_next.svg';
 import RecentListItemContainer from './RecentListItemContainer';
 import CommentContainer from './CommentContainer';
 import { usePostContainer } from '../../hooks/postPage/usePostContainer';
+import LoadingSpinner from '../common/LoadingSpinner';
+import ErrorContainer from '../common/ErrorContainer';
+import { useDateFormat } from '../../hooks/common/useDateFormat';
 
 const PostContainer = ({
+  moldevId,
   postId,
   isShow,
 }: {
+  moldevId: string;
   postId: number;
   isShow: boolean;
 }) => {
-  const { post, editorState, recentList, commentList, setEditorState } =
-    usePostContainer(postId);
+  const {
+    post,
+    postIsLoading,
+    postIsError,
+    editorState,
+    recentList,
+    setEditorState,
+  } = usePostContainer(moldevId, postId);
+  const date = useDateFormat(post?.postInfo.lastModifiedDate);
+
   return (
     <div
       className={`w-4/5 h-[95%] flex flex-col items-center justify-start rounded-modal bg-white shadow-md relative ${isShow ? 'translate-y-0' : 'translate-y-[200%]'} transition-all duration-150`}
@@ -26,7 +39,17 @@ const PostContainer = ({
       }}
     >
       {!post ? (
-        <div>게시글 정보가 없습니다.</div>
+        postIsLoading ? (
+          <LoadingSpinner />
+        ) : postIsError ? (
+          <ErrorContainer />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <div className="text-20 font-medium text-gray-700">
+              게시글이 존재하지 않습니다.
+            </div>
+          </div>
+        )
       ) : (
         <div className="w-full flex flex-col items-center justify-start overflow-y-scroll">
           <div className="w-full flex flex-col items-start justify-start gap-y-16 p-24 border-b border-b-gray-50">
@@ -34,25 +57,25 @@ const PostContainer = ({
               <div className="flex items-center justify-start gap-x-8">
                 <Pin className="h-[16px] w-auto" />
                 <div className="text-14 font-medium text-gray-700">
-                  {categoryToKorean[post.category]}
+                  {categoryToKorean[post.postInfo.category]}
                 </div>
               </div>
             </div>
             <div className="w-full items-center justify-start text-36 font-bold text-black">
-              {post.title}
+              {post.postInfo.title}
             </div>
             <div className="w-full flex items-center justify-between">
               <div className="flex items-center justify-start gap-x-6">
                 <img
-                  src={post.img}
+                  src={post.postInfo.thumbnail}
                   alt="profile"
                   className="w-[24px] h-[24px] rounded-full"
                 />
                 <div className="text-18 font-medium text-black">
-                  {post.userName}
+                  {post.userInfo.nickname}
                 </div>
               </div>
-              <div className="font-medium text-14 text-gray-700">{`${post.createdAt} | 조회수 ${post.visit}`}</div>
+              <div className="font-medium text-14 text-gray-700">{`${date} | 조회수 ${post.postInfo.viewCount}`}</div>
             </div>
           </div>
           <div className="w-full grow px-48 py-32 flex flex-col items-center justify-start">
@@ -76,7 +99,7 @@ const PostContainer = ({
             <div className="w-1/2 flex flex-col items-start justify-center py-30">
               <div className="w-full flex items-center justify-between">
                 <div className="text-20 font-medium">
-                  <span className="font-semibold">{`${categoryToKorean[post.category]} `}</span>
+                  <span className="font-semibold">{`${categoryToKorean[post.postInfo.category]} `}</span>
                   카테고리의 다른 글
                 </div>
                 <div className="flex items-center">
@@ -91,7 +114,7 @@ const PostContainer = ({
               </div>
             </div>
           </div>
-          <CommentContainer commentList={commentList} />
+          <CommentContainer postId={postId} />
         </div>
       )}
     </div>

@@ -56,12 +56,14 @@ const RectButton = ({
       ]}
       disabled={!isAble}
       onClick={
-        isAble
-          ? (e) => {
-              e.preventDefault();
-              onClick();
-            }
-          : () => {}
+        isSubmit
+          ? undefined
+          : isAble
+            ? (e) => {
+                e.preventDefault();
+                onClick();
+              }
+            : () => {}
       }
     >
       {text}

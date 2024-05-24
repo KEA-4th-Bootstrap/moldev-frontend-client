@@ -1,55 +1,49 @@
-import JoinInputContainer from './JoinInputContainer';
 import RectButton from '../common/RectButton';
 import { useFindPassword } from '../../hooks/loginPage/useFindPassword';
+import JoinEmailInputContainer from './JoinEmailInputContainer';
+import JoinAuthInputContainer from './JoinAuthInputContainer';
 
 const FindPasswordAuthContainer = ({
-  handleNext,
   hookReturns,
 }: {
-  handleNext: () => void;
   hookReturns: ReturnType<typeof useFindPassword>;
 }) => {
   return (
     <div className="w-full grow flex flex-col items-center justify-between">
       <div className="w-full flex flex-col items-center justify-start gap-y-16">
-        <JoinInputContainer
-          name="email"
+        <JoinEmailInputContainer
           label="이메일"
-          type="email"
-          placeholder="가입한이메일을 입력해주세요"
           value={hookReturns.email}
-          onChange={(e) => hookReturns.setEmail(e.target.value)}
-          isError={false}
-          errorMessage=""
-          buttonText="인증번호 전송"
-          isAble={hookReturns.email.length > 0}
-          buttonClick={() => hookReturns.setIsEmailSended(true)}
+          name="email"
+          onChange={hookReturns.onEmailChange}
+          isError={hookReturns.isEmailError}
+          isSended={hookReturns.isEmailSend}
+          footerMessage={hookReturns.emailFooter}
+          buttonClick={hookReturns.onClickEmailSend}
+          isAble={hookReturns.email.length > 0 && !hookReturns.isEmailSend}
         />
-        {hookReturns.isEmailSended && (
-          <JoinInputContainer
-            name="auth"
+        {hookReturns.isEmailSend && (
+          <JoinAuthInputContainer
             label="인증번호"
-            type="text"
-            placeholder="인증번호를 입력해주세요"
             value={hookReturns.auth}
+            name="authNumber"
             onChange={(e) => hookReturns.setAuth(e.target.value)}
-            isError={false}
-            errorMessage=""
+            isError={hookReturns.isAuthError}
+            isVerified={hookReturns.isAuthVerified}
+            errorMessage={hookReturns.authError}
+            buttonClick={hookReturns.onClickAuthSubmit}
             isAble={hookReturns.auth.length > 0}
-            buttonText="인증번호 확인"
-            buttonClick={() => {
-              hookReturns.setIsAuthChecked(true);
-            }}
+            remainTime={hookReturns.remainTime}
           />
         )}
       </div>
       <RectButton
         type="fill"
         text="다음"
-        onClick={handleNext}
+        onClick={hookReturns.onClickHandleNext}
         w={'100%'}
         h={'56px'}
-        isAble={hookReturns.isAuthChecked}
+        isAble={hookReturns.isAuthVerified && hookReturns.isEmailSend}
       />
     </div>
   );

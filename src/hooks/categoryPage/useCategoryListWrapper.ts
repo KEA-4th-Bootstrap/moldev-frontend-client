@@ -46,16 +46,16 @@ const useCategoryListWrapper = (category: categoryType) => {
 
   useEffect(() => {
     switch (category) {
-      case 'activity':
+      case 'ACTIVITY':
         setListItems(dummyActivity);
         break;
-      case 'project':
+      case 'PROJECT':
         setListItems(dummyProject);
         break;
-      case 'awards':
+      case 'AWARDS':
         setListItems(dummyAwards);
         break;
-      case 'trouble':
+      case 'TROUBLE':
         setListItems(dummyTrouble);
         break;
       default:
