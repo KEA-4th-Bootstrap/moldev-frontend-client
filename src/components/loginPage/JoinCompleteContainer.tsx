@@ -11,13 +11,13 @@ const JoinCompleteContainer = ({
   hookReturns: ReturnType<typeof useJoin>;
   onClick: () => void;
 }) => {
-  const { userName, islandName } = hookReturns.form;
+  const { nickname, islandName } = hookReturns.form;
   return (
     <>
       <div className="w-full flex flex-col gap-y-[60px]">
         <div className="text-20 flex flex-col gap-y-3 w-full items-start justify-center">
           <div>
-            <span className="font-semibold">{userName}</span> 님,
+            <span className="font-semibold">{nickname}</span> 님,
           </div>
           <div>
             <span className="font-semibold">{islandName}</span> 섬에 오신 것을
@@ -35,9 +35,9 @@ const JoinCompleteContainer = ({
       </div>
       <RectButton
         type="fill"
-        text="몰데브 시작하기"
+        text="시작하기"
         onClick={onClick}
-        isSubmit={true}
+        isSubmit={false}
         isAble={true}
         w={'100%'}
         h={'53px'}
