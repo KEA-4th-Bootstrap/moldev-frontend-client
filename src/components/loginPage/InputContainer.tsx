@@ -30,7 +30,7 @@ const InputContainer = ({
         />
       </div>
       <div
-        className={`w-full font-medium text-14 text-negative ${isError ? 'visible' : 'invisible'}`}
+        className={`w-full h-[20px] font-medium text-14 text-negative ${isError ? 'visible' : 'invisible'}`}
       >
         {errorMsg}
       </div>
