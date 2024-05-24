@@ -1,13 +1,11 @@
 import PasswordInputContainer from './PasswordInputContainer';
-import JoinInputContainer from './JoinInputContainer';
 import RectButton from '../common/RectButton';
 import { useFindPassword } from '../../hooks/loginPage/useFindPassword';
+import JoinInputContainer from './JoinInputContainer';
 
 const FindPasswordChangeContainer = ({
-  handleNext,
   hookReturns,
 }: {
-  handleNext: () => void;
   hookReturns: ReturnType<typeof useFindPassword>;
 }) => {
   return (
@@ -17,9 +15,9 @@ const FindPasswordChangeContainer = ({
           label="비밀번호"
           name="password"
           value={hookReturns.password}
-          onChange={(e) => hookReturns.setPassword(e.target.value)}
-          isError={false}
-          errorMessage=""
+          onChange={hookReturns.onPasswordChange}
+          isError={hookReturns.isPasswordError}
+          errorMessage="비밀번호 조건을 확인해주세요"
           options={[
             { text: '8자 이상', isComplete: hookReturns.password.length >= 8 },
             {
@@ -39,23 +37,27 @@ const FindPasswordChangeContainer = ({
           ]}
         />
         <JoinInputContainer
-          name="check-password"
-          value={hookReturns.checkPassword}
-          onChange={(e) => hookReturns.setCheckPassword(e.target.value)}
           label="비밀번호 확인"
+          value={hookReturns.passwordCheck}
+          name="passwordCheck"
+          onChange={(e) => hookReturns.setPasswordCheck(e.target.value)}
           type="password"
           placeholder="비밀번호를 다시 입력해주세요"
-          isError={false}
-          errorMessage=""
+          isError={
+            hookReturns.passwordCheck !== '' &&
+            hookReturns.password !== hookReturns.passwordCheck
+          }
+          errorMessage="비밀번호가 일치하지 않습니다."
         />
       </div>
       <RectButton
         type="fill"
         text="비밀번호 변경"
-        onClick={handleNext}
+        onClick={hookReturns.onClickPasswordChange}
         isAble={
           hookReturns.password !== '' &&
-          hookReturns.password === hookReturns.checkPassword
+          hookReturns.passwordCheck !== '' &&
+          hookReturns.password === hookReturns.passwordCheck
         }
         w={'100%'}
         h={'56px'}
