@@ -72,7 +72,7 @@ code {
 .editor .DraftEditor-root,
 .editor .DraftEditor-editorContainer,
 .editor .public-DraftEditor-content {
-  min-height: 50vh;
+  /* min-height: 50vh; */
   flex: 1 0 auto;
   background-color: white;
 }
