@@ -31,7 +31,7 @@ const CategoryListWrapper = ({
                 .slice(0, itemDimensions[0].length)
                 .map((item, index) => (
                   <CategoryListItemContainer
-                    key={item.id}
+                    key={item.postInfo.id}
                     item={item}
                     moldevId={moldevId || ''}
                     width={itemDimensions[0][index].width}
@@ -44,7 +44,7 @@ const CategoryListWrapper = ({
                 .slice(itemDimensions[0].length, 5)
                 .map((item, index) => (
                   <CategoryListItemContainer
-                    key={item.id}
+                    key={item.postInfo.id}
                     item={item}
                     moldevId={moldevId || ''}
                     width={itemDimensions[1][index].width}
