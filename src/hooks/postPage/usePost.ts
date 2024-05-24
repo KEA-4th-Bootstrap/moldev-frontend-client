@@ -1,19 +1,34 @@
-import { useEffect, useState } from 'react';
 import { postListItemType } from '../../data/type';
-import { dummyPost } from '../../data/dummy';
+import { useQuery } from 'react-query';
+import { getPostApi } from '../../api/postApi';
+import { useState } from 'react';
 
-const usePost = (articleId: number) => {
-  const [article, setArticle] = useState<postListItemType | null>(null);
+const usePost = (moldevId: string, postId: number) => {
+  const [post, setPost] = useState<postListItemType | null>(null);
+  const { isLoading: postIsLoading, error: postIsError } = useQuery(
+    'post',
+    () => getPostApi(moldevId, postId),
+    {
+      refetchOnWindowFocus: false,
+      onSuccess: (data) => {
+        console.log('data : ', data);
+        const post: postListItemType = {
+          postInfo: {
+            ...data.data.data.postInfo,
+          },
+          userInfo: {
+            ...data.data.data.postWriterInfo,
+          },
+        };
+        setPost(post);
+      },
+      onError: (error) => {
+        console.log('error : ', error);
+      },
+    },
+  );
 
-  useEffect(() => {
-    if (!articleId) return;
-
-    // fetch article data
-    console.log('articleID:', articleId);
-    setArticle(dummyPost);
-  }, [articleId]);
-
-  return article;
+  return { post, postIsLoading, postIsError };
 };
 
 export default usePost;
