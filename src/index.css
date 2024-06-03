@@ -51,11 +51,22 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   box-sizing: border-box;
+  -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: border-box;    /* Firefox, other Gecko */
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.sidebar-button .sidebar-button-text {
+  transition: max-width 0.2s;
+  max-width: 0;
+}
+
+.sidebar-button:hover .sidebar-button-text {
+  max-width: 200px;
 }
 
 .toolbar__controls {
