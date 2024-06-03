@@ -1,20 +1,19 @@
 import React from 'react';
-import { searchOptionType } from '../../../data/type';
 import { ReactComponent as More } from '../../../assets/icons/arrow_right_gray_600.svg';
 
 const SearchListFooter = ({
-  type,
-  setOption,
+  text,
+  onClick,
 }: {
-  type: searchOptionType;
-  setOption: () => void;
+  text: string;
+  onClick: () => void;
 }) => {
   return (
     <div
       className="flex items-center justify-start gap-x-5 text-12 text-gray-600 cursor-pointer"
-      onClick={setOption}
+      onClick={onClick}
     >
-      <div>{type === 'post' ? '게시글' : '섬'} 더보기</div>
+      <div>{text} 더보기</div>
       <More width={24} height={24} />
     </div>
   );
