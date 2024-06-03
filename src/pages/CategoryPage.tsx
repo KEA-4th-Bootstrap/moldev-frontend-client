@@ -4,24 +4,11 @@ import ModalBackground from '../components/common/ModalBackground';
 import CategoryListContainer from '../components/categoryPage/CategoryListContainer';
 
 const CategoryPage = () => {
-  const { isShow, childIsShow, onBackgroundClick, categoryName } =
+  const { isShow, childIsShow, onBackgroundClick, realCategoryName } =
     useCategoryList();
   return (
     <ModalBackground isShow={isShow} onClick={onBackgroundClick}>
-      <CategoryListContainer
-        isShow={childIsShow}
-        category={
-          categoryName === 'activity'
-            ? 'ACTIVITY'
-            : categoryName === 'project'
-              ? 'PROJECT'
-              : categoryName === 'awards'
-                ? 'AWARDS'
-                : categoryName === 'trouble'
-                  ? 'TROUBLE'
-                  : 'ACTIVITY'
-        }
-      />
+      <CategoryListContainer isShow={childIsShow} category={realCategoryName} />
     </ModalBackground>
   );
 };
