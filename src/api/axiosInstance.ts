@@ -15,7 +15,7 @@ export const baseAxios = axios.create({
 export const authAxios = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
   withCredentials: true,
-  timeout: 60000,
+  timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': process.env.REACT_APP_API_URL,
