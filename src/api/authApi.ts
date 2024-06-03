@@ -76,3 +76,8 @@ export const postMailOnPasswordApi = async (email: string) => {
 export const postVerifyEmailApi = async (email: string, code: string) => {
   return baseAxios.post('/api/auth/verify-email', { email, code });
 };
+export const postReissueTokenApi = async (accessToken: string) => {
+  return baseAxios.post('/api/auth/reissue', {
+    accessToken: accessToken,
+  });
+};
