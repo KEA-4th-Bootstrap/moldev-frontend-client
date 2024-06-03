@@ -2,7 +2,7 @@ import React from 'react';
 
 const SearchResultPostSkeleton = () => {
   return (
-    <div className="w-full flex flex-col rounded-block bg-white">
+    <div className="animate-pulseFast w-full flex flex-col rounded-block bg-white">
       <div className="w-full flex items-start justify-between p-8 gap-x-12">
         <div className="grow h-[98px] flex flex-col gap-y-6 items-start justify-center">
           <div className="w-full h-[20px] rounded-block bg-gray-100" />
