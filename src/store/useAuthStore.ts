@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { getAccessToken } from '../api/manageLocalStorage';
 
 interface AuthStore {
   isLoggedIn: boolean;
@@ -12,7 +13,7 @@ const useAuthStore = create(
     (set) => ({
       isLoggedIn: false,
       login: () => {
-        const userLocalStorage = localStorage.getItem('accessToken');
+        const userLocalStorage = getAccessToken();
         if (userLocalStorage) {
           set({ isLoggedIn: true });
         }
