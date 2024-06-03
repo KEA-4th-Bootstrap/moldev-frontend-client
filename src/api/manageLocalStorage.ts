@@ -10,14 +10,26 @@ export const removeAccessToken = () => {
   localStorage.removeItem('accessToken');
 };
 
-export const setMemberId = (memberId: number) => {
-  localStorage.setItem('memberId', memberId.toString());
+export const setMoldevId = (moldevId: string) => {
+  localStorage.setItem('moldevId', moldevId);
 };
 
-export const getMemberId = () => {
-  return Number(localStorage.getItem('memberId'));
+export const getMoldevId = () => {
+  return localStorage.getItem('moldevId');
 };
 
-export const removeMemberId = () => {
-  localStorage.removeItem('memberId');
+export const removeMoldevId = () => {
+  localStorage.removeItem('moldevId');
+};
+
+export const setNickname = (nickname: string) => {
+  localStorage.setItem('nickname', nickname);
+};
+
+export const getNickname = () => {
+  return localStorage.getItem('nickname');
+};
+
+export const removeNickname = () => {
+  localStorage.removeItem('nickname');
 };
