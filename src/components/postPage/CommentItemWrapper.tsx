@@ -1,15 +1,14 @@
 import React from 'react';
 import { commentType, replyType } from '../../data/type';
-import { useDateFormat } from '../../hooks/common/useDateFormat';
+import { useCommentItemWrapper } from '../../hooks/postPage/useCommentItemWrapper';
 
 const CommentItemWrapper = ({
   comment,
 }: {
   comment: commentType | replyType;
 }) => {
-  const info =
-    'commentInfo' in comment ? comment.commentInfo : comment.replyInfo;
-  const date = useDateFormat(info.createdAt);
+  const { moldevId, info, userInfo, date, deleteComment } =
+    useCommentItemWrapper(comment);
   return (
     <div className="w-full flex flex-col items-center justify-center gap-y-20">
       <div className="w-full flex items-center justify-start gap-x-15">
@@ -28,9 +27,19 @@ const CommentItemWrapper = ({
         <div className="flex items-center justify-start gap-x-7 text-gray-300">
           <div>{date}</div>
           <div className="w-px h-[16px] bg-gray-300" />
-          <div className="hover:underline underline-offset-2 cursor-pointer">
-            신고
-          </div>
+          {!!moldevId &&
+            (moldevId === userInfo.moldevId ? (
+              <div
+                className="hover:underline underline-offset-2 cursor-pointer"
+                onClick={() => deleteComment()}
+              >
+                삭제
+              </div>
+            ) : (
+              <div className="hover:underline underline-offset-2 cursor-pointer">
+                신고
+              </div>
+            ))}
         </div>
       </div>
     </div>
