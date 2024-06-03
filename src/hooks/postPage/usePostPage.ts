@@ -4,8 +4,11 @@ import useModal from '../common/useModal';
 
 const usePostPage = () => {
   const { moldevId, postId } = useParams();
-  const { isShow, childIsShow, setChildIsShow, onBackgroundClick } =
-    useModal(-1);
+  const { isShow, childIsShow, setChildIsShow, onBackgroundClick } = useModal(
+    -1,
+    undefined,
+    true,
+  );
 
   useEffect(() => {
     console.log('articleId', postId);
