@@ -12,6 +12,7 @@ const RecommendPage = () => {
   const { recommend, isLoading, isFetching, isError, isLoggedIn, refetch } =
     useRecommend();
   const nickname = getNickname();
+
   return isLoggedIn ? (
     <div className="grow h-full flex flex-col items-start justify-start">
       <div className="w-full mt-70 pb-30 px-16 text-28 flex flex-col gap-y-2 border-b-[0.5px] border-gray-100">
