@@ -1,27 +1,34 @@
 import { ReactComponent as Info } from '../../assets/icons/icon_info_main.svg';
 import { ReactComponent as Send } from '../../assets/icons/icon_send.svg';
+import NeedLoginContainer from '../../components/common/NeedLoginContainer';
+import NeedMoldevPage from '../../components/common/NeedMoldevPage';
 import ChatbotLoadingContainer from '../../components/sidebar/chatbot/ChatbotLoadingContainer';
 import MessageContainer from '../../components/sidebar/chatbot/MessageContainer';
+import { postListItemUserType } from '../../data/type';
 import useChatbot from '../../hooks/sidebar/chatbot/useChatbot';
 
-const ChatbotPage = () => {
+const ChatbotPage = ({
+  userInfoData,
+}: {
+  userInfoData: postListItemUserType | undefined;
+}) => {
   const {
     messages,
     inputMessage,
     setInputMessage,
     handleSendMessage,
     isLoading,
-    isFetching,
-  } = useChatbot(99);
-  return (
+    isLoggedIn,
+  } = useChatbot(userInfoData ? userInfoData.moldevId : null);
+  return userInfoData && isLoggedIn ? (
     <div className="grow h-full flex flex-col items-start justify-start">
       <div className="w-full mt-70 px-16 text-28 flex flex-col gap-y-2">
         <div className="flex items-center justify-start gap-x-6">
-          <div className="font-bold">챗봇</div>
+          <div className="font-bold">{userInfoData.nickname}</div>
           <div>님의</div>
         </div>
         <div className="flex items-center justify-start gap-x-6">
-          <div className="font-bold">몰디브</div>
+          <div className="font-bold">{userInfoData.islandName}</div>
           <div>섬에 대해 알아보세요.</div>
         </div>
       </div>
@@ -43,7 +50,7 @@ const ChatbotPage = () => {
             message={message.message}
           />
         ))}
-        {isLoading || (isFetching && <ChatbotLoadingContainer />)}
+        {isLoading && <ChatbotLoadingContainer />}
       </div>
       <div className="w-full flex items-center justify-start px-16 pt-20 pb-30 gap-x-15 bg-white border-t-[0.5px] border-gray-100">
         <input
@@ -52,7 +59,7 @@ const ChatbotPage = () => {
           placeholder="메세지를 입력하세요"
           value={inputMessage}
           onChange={(e) => setInputMessage(e.target.value)}
-          onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+          // onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
         />
         <button
           className="w-[40px] h-[40px] rounded-full p-10 bg-main"
@@ -62,6 +69,10 @@ const ChatbotPage = () => {
         </button>
       </div>
     </div>
+  ) : isLoggedIn ? (
+    <NeedMoldevPage />
+  ) : (
+    <NeedLoginContainer />
   );
 };
 
