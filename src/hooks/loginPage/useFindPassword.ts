@@ -61,10 +61,11 @@ export const useFindPassword = () => {
 
   const { mutate: tryPasswordChange } = useMutation(
     'passwordChange',
-    () => patchPassword(password),
+    () => patchPassword(email, password),
     {
-      onSuccess: () => {
+      onSuccess: (data) => {
         setIsCompleted(true);
+        console.log('비밀번호 변경 성공 --> ', data);
       },
       onError: (error) => {
         console.log('error : ', error);
@@ -107,6 +108,7 @@ export const useFindPassword = () => {
   const onClickEmailSend = () => {
     if (email.length > 0) {
       setIsEmailError(false);
+      console.log('email : ', email);
       trySendEmail();
     } else {
       setEmailFooter('이메일을 입력해주세요.');
@@ -131,6 +133,8 @@ export const useFindPassword = () => {
 
   const onClickPasswordChange = () => {
     if (password !== '' && passwordCheck !== '' && password === passwordCheck) {
+      console.log('email: ', email);
+      console.log('password : ', password);
       tryPasswordChange();
     }
   };
