@@ -10,38 +10,40 @@ export const useReply = (
 ) => {
   const [content, setContent] = useState('');
   const [replyList, setReplyList] = useState<replyType[]>([]);
-  const { isLoading: replyIsLoading, error: replyIsError } = useQuery(
-    `reply-${commentId}`,
-    () => getCommetReplyApi(commentId),
-    {
-      refetchOnWindowFocus: false,
-      enabled: isReplyOpen,
-      onSuccess: (data) => {
-        console.log('data : ', data);
-        const replyList: replyType[] = [];
-        for (let i = 0; i < data.data.data.replyInfo.replyList.length; i++) {
-          replyList.push({
-            replyInfo: {
-              ...data.data.data.replyInfo.replyList[i],
-            },
-            userInfo: {
-              ...data.data.data.userInfo.userList[i],
-            },
-          });
-        }
-        setReplyList(replyList);
-      },
-      onError: (error) => {
-        console.log('error : ', error);
-      },
+  const {
+    isLoading: replyIsLoading,
+    error: replyIsError,
+    refetch: replyRefetch,
+  } = useQuery(`reply-${commentId}`, () => getCommetReplyApi(commentId), {
+    refetchOnWindowFocus: false,
+    enabled: isReplyOpen,
+    onSuccess: (data) => {
+      console.log('data : ', data);
+      const replyList: replyType[] = [];
+      for (let i = 0; i < data.data.data.replyInfo.replyList.length; i++) {
+        replyList.push({
+          replyInfo: {
+            ...data.data.data.replyInfo.replyList[i],
+          },
+          userInfo: {
+            ...data.data.data.userInfo.userList[i],
+          },
+        });
+      }
+      setReplyList(replyList);
     },
-  );
+    onError: (error) => {
+      console.log('error : ', error);
+    },
+  });
 
   const { mutate: tryPostReply } = useMutation(
     () => postReplyApi(postId, commentId, content),
     {
       onSuccess: (data) => {
         console.log('data : ', data);
+        replyRefetch();
+        setContent('');
       },
       onError: (error) => {
         console.log('error : ', error);
