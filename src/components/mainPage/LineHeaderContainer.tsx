@@ -4,6 +4,8 @@ import PostListItemContainer from './PostListItemContainer';
 import IslandListItemContainer from './IslandListItemContainer';
 import PostListItemSkeleton from './PostListItemSkeleton';
 import ErrorContainer from '../common/ErrorContainer';
+import IslandListItemSkeleton from './IslandListItemSkeleton';
+import EmptyContainer from '../common/EmptyContainer';
 
 const LineHeaderContainer = () => {
   const {
@@ -14,6 +16,8 @@ const LineHeaderContainer = () => {
     onClickIsland,
     postListIsLoading,
     postListIsError,
+    islandListIsLoading,
+    islandListIsError,
   } = useLineHeader();
   return (
     <div className="w-full grow flex flex-col items-start justify-start gap-y-20">
@@ -48,6 +52,32 @@ const LineHeaderContainer = () => {
               <PostListItemContainer key={index} item={item} />
             ))
           )
+        ) : !islandList ? (
+          islandListIsLoading ? (
+            <>
+              <IslandListItemSkeleton />
+              <IslandListItemSkeleton />
+              <IslandListItemSkeleton />
+            </>
+          ) : islandListIsError ? (
+            <>
+              <div />
+              <ErrorContainer />
+              <div />
+            </>
+          ) : (
+            <>
+              <div />
+              <div>알 수 없는 에러가 발생하였습니다.</div>
+              <div />
+            </>
+          )
+        ) : islandList.length < 1 ? (
+          <>
+            <div />
+            <EmptyContainer />
+            <div />
+          </>
         ) : (
           islandList.map((item, index) => (
             <IslandListItemContainer key={index} item={item} />
