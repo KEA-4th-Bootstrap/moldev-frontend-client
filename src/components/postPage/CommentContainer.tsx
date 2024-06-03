@@ -4,6 +4,7 @@ import CommentItemContainer from './CommentItemContainer';
 import { useComment } from '../../hooks/postPage/useComment';
 import LoadingSpinner from '../common/LoadingSpinner';
 import ErrorContainer from '../common/ErrorContainer';
+import useAuthStore from '../../store/useAuthStore';
 
 const CommentContainer = ({ postId }: { postId: number }) => {
   const {
@@ -14,29 +15,38 @@ const CommentContainer = ({ postId }: { postId: number }) => {
     onChangeContent,
     onCommentClick,
   } = useComment(postId);
+  const { isLoggedIn } = useAuthStore();
   return (
     <div className="w-3/5 flex flex-col items-start justify-center py-30">
       <div className="text-20 font-medium">
         <span className="font-bold">{`${commentList ? commentList.length : 0} `}</span>{' '}
         개의 댓글
       </div>
-      <div className="w-full flex flex-col items-end justify-center gap-y-15 py-20">
-        <div className="w-full h-[150px] border border-gray-50 p-10">
-          <textarea
-            className="w-full h-full resize-none outline-none border-none text-18 font-normal"
-            placeholder="댓글을 입력해주세요"
-            value={content}
-            onChange={onChangeContent}
+      {isLoggedIn ? (
+        <div className="w-full flex flex-col items-end justify-center gap-y-15 py-20">
+          <div className="w-full h-[150px] border border-gray-50 p-10">
+            <textarea
+              className="w-full h-full resize-none outline-none border-none text-18 font-normal"
+              placeholder="댓글을 입력해주세요"
+              value={content}
+              onChange={onChangeContent}
+            />
+          </div>
+          <RectButton
+            type="stroke"
+            text="댓글 등록"
+            onClick={onCommentClick}
+            h={'42px'}
+            fontSize={16}
           />
         </div>
-        <RectButton
-          type="stroke"
-          text="댓글 등록"
-          onClick={onCommentClick}
-          h={'42px'}
-          fontSize={16}
-        />
-      </div>
+      ) : (
+        <div className="w-full flex flex-col items-center justify-center gap-y-10 py-50 my-20 rounded-block bg-gray-50">
+          <div className="text-18 font-medium text-gray-600">
+            로그인 후 댓글을 작성해보세요.
+          </div>
+        </div>
+      )}
       <div className="w-full flex flex-col items-center justify-start">
         {!commentList ? (
           commentIsLoading ? (
