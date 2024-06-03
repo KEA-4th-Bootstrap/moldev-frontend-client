@@ -1,7 +1,11 @@
 import { useState } from 'react';
 import { useMutation } from 'react-query';
 import { postLoginApi } from '../../api/authApi';
-import { setAccessToken, setMemberId } from '../../api/manageLocalStorage';
+import {
+  setAccessToken,
+  setMoldevId,
+  setNickname,
+} from '../../api/manageLocalStorage';
 import { CustomError } from '../../api/customError';
 import useAuthStore from '../../store/useAuthStore';
 
@@ -19,8 +23,9 @@ export const useLogin = (onClose: () => void) => {
     {
       onSuccess: (data) => {
         console.log('data : ', data);
-        setMemberId(data.data.data.memberId);
+        setMoldevId(data.data.data.moldevId);
         setAccessToken(data.data.data.accessToken);
+        setNickname(data.data.data.nickname);
         login();
         onClose();
       },
