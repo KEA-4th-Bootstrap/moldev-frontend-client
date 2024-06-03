@@ -4,12 +4,15 @@ import RectButton from '../components/common/RectButton';
 import BlockStyleButton from '../components/writePage/BlockStyleButton';
 import InlineStyleButton from '../components/writePage/InlineStyleButton';
 import createLinkifyPlugin from '@draft-js-plugins/linkify';
+import createImagePlugin from '@draft-js-plugins/image';
 import { categoryToKorean } from '../data/type';
 import { ReactComponent as Pin } from '../assets/icons/icon_pin.svg';
 import { ReactComponent as CheckMain } from '../assets/icons/icon_check_main.svg';
 import { ReactComponent as DownArrow } from '../assets/icons/arrow_down_gray_200.svg';
 import RoundButton from '../components/common/RoundButton';
 import { useWrite } from '../hooks/writePage/useWrite';
+import { ReactComponent as Image } from '../assets/icons/icon_image.svg';
+import useRouteNavigate from '../hooks/common/useRouteNavigate';
 
 const linkifyPlugin = createLinkifyPlugin({
   component: (props) => (
@@ -41,7 +44,8 @@ const linkifyPlugin = createLinkifyPlugin({
     </a>
   ),
 });
-const plugins = [linkifyPlugin];
+const imagePlugin = createImagePlugin();
+const plugins = [linkifyPlugin, imagePlugin];
 
 const WritePage = () => {
   const {
@@ -55,15 +59,25 @@ const WritePage = () => {
     title,
     setTitle,
     editorState,
-    setEditorState,
     toggleBlockType,
     toggleInlineStyle,
     getBlockStyle,
+    handlePastedFiled,
+    onUpload,
+    onUploadImageButtonClick,
+    inputRef,
+    images,
+    thumbnail,
+    setThumbnail,
+    onUploadPostClick,
+    tryPostIsLoading,
+    handleEditorChange,
   } = useWrite();
+  const { onClickIcon: goHome } = useRouteNavigate('/');
   return (
     <div className="w-full min-h-screen h-full flex flex-col items-center justify-start">
       <div className="shrink-0 w-full flex items-center justify-between px-16 py-20 border-b-[0.5px] border-gray-100">
-        <Logo />
+        <Logo className="cursor-pointer" onClick={goHome} />
         <div className="flex items-center justify-end relative">
           <RectButton
             text="업로드"
@@ -156,7 +170,7 @@ const WritePage = () => {
             <RoundButton
               type="fill"
               text="포스트 업로드"
-              onClick={() => setIsUploadOpen(false)}
+              onClick={onUploadPostClick}
               h={'37px'}
               w={'273px'}
               fontSize={16}
@@ -174,29 +188,76 @@ const WritePage = () => {
             editorState={editorState}
             onToggle={toggleInlineStyle}
           />
-        </div>
-        <div className="editor grow w-4/6 py-60 bg-white shadow-editor overflow-y-scroll">
-          <div className="w-full pt-30 pb-20 px-24 bg-white">
-            <input
-              type="text"
-              placeholder="제목을 입력하세요"
-              className="w-full h-14 text-3xl font-bold outline-none"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-            <div className="w-full h-[1px] bg-gray-100 mt-20"></div>
-          </div>
-          <Editor
-            plugins={plugins}
-            editorState={editorState}
-            onChange={setEditorState}
-            // handleKeyCommand={handleKeyCommand}
-            blockStyleFn={getBlockStyle}
-            placeholder="내용을 입력하세요."
-            ref={editorRef}
+          <Image
+            className="cursor-pointer"
+            width={24}
+            height={24}
+            onClick={onUploadImageButtonClick}
+          />
+          <input
+            ref={inputRef}
+            className="hidden"
+            type="file"
+            accept="image/*"
+            onChange={onUpload}
           />
         </div>
+        <div className="w-full flex flex-col items-center justify-start overflow-hidden grow relative">
+          <div className="editor grow w-3/5 py-60 bg-white shadow-editor overflow-y-scroll">
+            <div className="w-full pt-30 pb-20 px-24 bg-white">
+              <input
+                type="text"
+                placeholder="제목을 입력하세요"
+                className="w-full h-14 text-3xl font-bold outline-none"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+              <div className="w-full h-[1px] bg-gray-100 mt-20"></div>
+            </div>
+            <Editor
+              plugins={plugins}
+              editorState={editorState}
+              onChange={handleEditorChange}
+              handlePastedFiles={handlePastedFiled}
+              // handleKeyCommand={handleKeyCommand}
+              blockStyleFn={getBlockStyle}
+              placeholder="내용을 입력하세요."
+              ref={editorRef}
+            />
+          </div>
+          <div className="absolute right-0 top-0 h-full bg-white w-1/6 py-30 px-16">
+            <div className="font-bold text-18">대표 사진</div>
+            <div className="w-full h-px bg-gray-50 my-20" />
+            <div className="w-full flex flex-col gap-y-16">
+              {images.length < 1 ? (
+                <div className="w-full text-center text-14 text-gray-600">
+                  대표 사진 설정을 위해
+                  <br /> 이미지를 업로드해주세요.
+                </div>
+              ) : (
+                images.map((image, index) => (
+                  <img
+                    key={index}
+                    src={image}
+                    alt="image"
+                    className={`w-full h-auto object-cover rounded-sm ${
+                      thumbnail === image ? 'border-2 border-blue-500' : ''
+                    }`}
+                    onClick={() => setThumbnail(image)}
+                  />
+                ))
+              )}
+            </div>
+          </div>
+        </div>
       </div>
+      {tryPostIsLoading && (
+        <div className="fixed w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-30">
+          <div className="w-[200px] h-[200px] flex items-center justify-center bg-white rounded-lg">
+            <div className="w-10 h-10 border-2 border-t-[4px] border-blue-500 rounded-full animate-spin"></div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
