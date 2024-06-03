@@ -33,6 +33,7 @@ export type sideType =
   | 'onboarding';
 
 export type categoryType = 'ACTIVITY' | 'PROJECT' | 'AWARDS' | 'TROUBLE';
+
 export const categoryToKorean = {
   ACTIVITY: '대외활동',
   PROJECT: '프로젝트',
@@ -40,18 +41,37 @@ export const categoryToKorean = {
   TROUBLE: '트러블슈팅',
 };
 
+// export const categoryToNum = {
+//   ACTIVITY: 1,
+//   PROJECT: 2,
+//   AWARDS: 3,
+//   TROUBLE: 4,
+//   // 자기소개 넣어야됨
+// };
+
 export type postListItemType = {
   postInfo: postListItemPostType;
   userInfo: postListItemUserType;
 };
 export type postListItemPostType = {
-  category: categoryType;
+  category?: categoryType;
   content: string;
   id: number;
   lastModifiedDate: string;
   moldevId: string;
   thumbnail: string;
   title: string;
+  viewCount: number;
+  memberId?: number;
+};
+
+export type mainListPostItemType = {
+  category: categoryType;
+  content: string;
+  id: number;
+  thumbnail: string;
+  title: string;
+  updadtedDate: string;
   viewCount: number;
 };
 
@@ -60,6 +80,36 @@ export type postListItemUserType = {
   moldevId: string;
   nickname: string;
   profileImgUrl: string;
+  memberId?: number;
+  todayViewCount?: number;
+};
+
+export type myInfoType = {
+  moldevId: string;
+  nickname: string;
+  profileImgUrl: string;
+  islandName: string;
+  email: string;
+};
+
+export type trendIslandType = {
+  postInfo: {
+    recentPostsResponseDtoList: recentPostsResponseDtoListType[];
+  };
+  userInfo: {
+    trendingMembersResponseDtos: trendingMembersResponseDtosType[];
+  };
+};
+
+export type trendingMembersResponseDtosType = {
+  memberProfileResponseDto: postListItemUserType;
+  redisViewCount: number;
+};
+
+export type recentPostsResponseDtoListType = {
+  title: string;
+  lastModifiedDate: string;
+  postId: number;
 };
 
 export type islandListItemType = {
@@ -76,11 +126,6 @@ export type islandListItemType = {
   }[];
 };
 
-export type recommendIslandType = {
-  percentage: number;
-  island: islandListItemType;
-};
-
 export type messageType = {
   messageId: number;
   isBot: boolean;
@@ -88,10 +133,9 @@ export type messageType = {
 };
 
 export type recentListItemType = {
-  postId: number;
+  id: number;
   title: string;
-  createdAt: string;
-  isActive: boolean;
+  updateDate: string;
 };
 
 export type commentType = {
@@ -128,4 +172,17 @@ export type joinType = {
   moldevId: string;
   nickname: string;
   islandName: string;
+};
+
+export type searchResultPostType = {
+  postInfo: {
+    pageInfo: {
+      hasNextPage: boolean;
+      pageNumber: number;
+    };
+    postList: postListItemPostType[];
+  };
+  userInfo: {
+    userList: postListItemUserType[];
+  };
 };
