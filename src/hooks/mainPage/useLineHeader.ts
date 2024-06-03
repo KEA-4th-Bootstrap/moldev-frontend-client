@@ -1,17 +1,18 @@
-import { useEffect, useState } from 'react';
 import {
-  islandListItemType,
   lineHeaderType,
   postListItemType,
+  trendIslandType,
 } from '../../data/type';
-import { dummyIslandList, dummyProject } from '../../data/dummy';
 import { useQuery } from 'react-query';
-import { getTrendingPostListApi } from '../../api/mainApi';
+import {
+  getTrendingIslandListApi,
+  getTrendingPostListApi,
+} from '../../api/mainApi';
+import { useState } from 'react';
 
 const useLineHeader = () => {
   const [selected, setSelected] = useState<lineHeaderType>('post');
   const [postList, setPostList] = useState<postListItemType[]>([]);
-  const [islandList, setIslandList] = useState<islandListItemType[]>([]);
 
   const { isLoading: postListIsLoading, error: postListIsError } = useQuery(
     'postList',
@@ -19,6 +20,7 @@ const useLineHeader = () => {
     {
       enabled: selected === 'post',
       refetchOnWindowFocus: false,
+      // refetchOnMount: false,
       onSuccess: (data) => {
         console.log('data : ', data);
         console.log(data.data.data.postInfo);
@@ -43,10 +45,27 @@ const useLineHeader = () => {
     },
   );
 
-  useEffect(() => {
-    setPostList(dummyProject);
-    setIslandList(dummyIslandList);
-  }, []);
+  const {
+    isLoading: islandListIsLoading,
+    error: islandListIsError,
+    data: islandList,
+  } = useQuery<trendIslandType[]>(
+    'islandList',
+    () =>
+      getTrendingIslandListApi().then((res) => {
+        return res.data.data.trendIslands;
+      }),
+    {
+      enabled: selected === 'island',
+      refetchOnWindowFocus: false,
+      onSuccess: (data) => {
+        console.log('트렌딩 섬 받아오기 성공 --> ', data);
+      },
+      onError: (error) => {
+        console.log('트렌딩 섬 받아오기 실패 --> ', error);
+      },
+    },
+  );
 
   const onClickPost = () => {
     setSelected('post');
@@ -64,6 +83,8 @@ const useLineHeader = () => {
     onClickIsland,
     postListIsLoading,
     postListIsError,
+    islandListIsLoading,
+    islandListIsError,
   };
 };
 
