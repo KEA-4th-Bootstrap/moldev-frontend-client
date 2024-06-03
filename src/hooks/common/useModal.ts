@@ -1,10 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 
-const useModal = (url?: string | -1, onClose?: () => void) => {
+const useModal = (
+  url?: string | -1,
+  onClose?: () => void,
+  initial?: boolean,
+) => {
   const navigate = useNavigate();
-  const [isShow, setIsShow] = useState(false);
-  const [childIsShow, setChildIsShow] = useState(false);
+  const [isShow, setIsShow] = useState(initial || false);
+  const [childIsShow, setChildIsShow] = useState(initial || false);
 
   useEffect(() => {
     setIsShow(true);
