@@ -313,7 +313,6 @@ const useJoin = () => {
     isMoldevIdDuplicated,
     isMoldevIdVerified,
     // 이미지
-    profileImage,
     inputRef,
     preview,
     // 공통
