@@ -31,6 +31,30 @@ const CommentItemContainer = ({ comment }: { comment: commentType }) => {
       </button>
       {isReplyOpen && (
         <div className="w-full flex flex-col items-center justify-start">
+          {!replyList ? (
+            replyIsLoading ? (
+              <LoadingSpinner />
+            ) : replyIsError ? (
+              <ErrorContainer />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center py-70 mb-60 bg-gray-50 rounded-block">
+                <div className="text-18 font-medium text-gray-400">
+                  답글이 존재하지 않습니다.
+                </div>
+              </div>
+            )
+          ) : (
+            replyList.length > 0 &&
+            replyList.map((reply) => (
+              <div
+                key={reply.replyInfo.id}
+                className="w-full flex items-start justify-start gap-x-10 pl-10 py-20"
+              >
+                <ReplyIcon />
+                <CommentItemWrapper comment={reply} />
+              </div>
+            ))
+          )}
           <div className="w-full flex items-start justify-start gap-x-10 pl-10 py-20">
             <ReplyIcon />
             <div className="grow flex flex-col items-end justify-center gap-y-15">
@@ -51,35 +75,6 @@ const CommentItemContainer = ({ comment }: { comment: commentType }) => {
               />
             </div>
           </div>
-          {!replyList ? (
-            replyIsLoading ? (
-              <LoadingSpinner />
-            ) : replyIsError ? (
-              <ErrorContainer />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center py-70 mb-60 bg-gray-50 rounded-block">
-                <div className="text-18 font-medium text-gray-400">
-                  답글이 존재하지 않습니다.
-                </div>
-              </div>
-            )
-          ) : replyList.length < 1 ? (
-            <div className="w-full h-full flex items-center justify-center py-70 mb-60 bg-gray-50 rounded-block">
-              <div className="text-18 font-medium text-gray-400">
-                답글이 존재하지 않습니다.
-              </div>
-            </div>
-          ) : (
-            replyList.map((reply) => (
-              <div
-                key={reply.replyInfo.id}
-                className="w-full flex items-start justify-start gap-x-10 pl-10 py-20"
-              >
-                <ReplyIcon />
-                <CommentItemWrapper comment={reply} />
-              </div>
-            ))
-          )}
         </div>
       )}
     </div>
