@@ -86,7 +86,8 @@ pipeline {
             steps {
                 withCredentials([gitUsernamePassword(credentialsId: 'git-jenkins-manifest', gitToolName: 'Default')]) {
                     sh "git push -u origin main"
-                    sh "docker image prune -f"
+                    sh "docker rmi -f $(docker images -aq)"
+                    sh "docker system prune -f"
                 }
             }
         }
