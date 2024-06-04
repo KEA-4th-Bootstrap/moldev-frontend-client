@@ -28,7 +28,7 @@
 FROM nginx:stable-alpine
 
 # 이전 빌드 단계에서 빌드한 결과물을 /usr/share/nginx/html 으로 복사한다.
-COPY ./public /usr/share/nginx/html
+COPY ./build /usr/share/nginx/html
 
 # 컨테이너의 80번 포트를 열어준다.
 EXPOSE 80
