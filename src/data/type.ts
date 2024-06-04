@@ -186,3 +186,11 @@ export type searchResultPostType = {
     userList: postListItemUserType[];
   };
 };
+
+export type embeddingType = {
+  title: string;
+  content: string;
+  thumbnail: string;
+  category: categoryType;
+  url: string;
+};

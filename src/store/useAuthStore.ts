@@ -21,6 +21,7 @@ const useAuthStore = create(
       logout: () => {
         set({ isLoggedIn: false });
         localStorage.clear();
+        window.location.href = '/';
       },
     }),
     {

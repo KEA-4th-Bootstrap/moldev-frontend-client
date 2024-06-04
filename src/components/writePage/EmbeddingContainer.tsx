@@ -1,20 +1,17 @@
-import Editor from '@draft-js-plugins/editor';
-import { ReactComponent as Logo } from '../assets/logo/logo_text.svg';
-import RectButton from '../components/common/RectButton';
-import BlockStyleButton from '../components/writePage/BlockStyleButton';
-import InlineStyleButton from '../components/writePage/InlineStyleButton';
-import createLinkifyPlugin from '@draft-js-plugins/linkify';
+import RectButton from '../common/RectButton';
+import { ReactComponent as Prev } from '../../assets/icons/icon_prev.svg';
+import { useEmbedding } from '../../hooks/writePage/useEmbedding';
+import { ReactComponent as Pin } from '../../assets/icons/icon_pin.svg';
+import { ReactComponent as CheckMain } from '../../assets/icons/icon_check_main.svg';
+import { ReactComponent as DownArrow } from '../../assets/icons/arrow_down_gray_200.svg';
+import { ReactComponent as Image } from '../../assets/icons/icon_image.svg';
+import { categoryToKorean, embeddingType } from '../../data/type';
+import RoundButton from '../common/RoundButton';
 import createImagePlugin from '@draft-js-plugins/image';
-import { categoryToKorean } from '../data/type';
-import { ReactComponent as Pin } from '../assets/icons/icon_pin.svg';
-import { ReactComponent as CheckMain } from '../assets/icons/icon_check_main.svg';
-import { ReactComponent as DownArrow } from '../assets/icons/arrow_down_gray_200.svg';
-import RoundButton from '../components/common/RoundButton';
-import { useWrite } from '../hooks/writePage/useWrite';
-import { ReactComponent as Image } from '../assets/icons/icon_image.svg';
-import { ReactComponent as EmbeddingBox } from '../assets/icons/icon_embedding_box.svg';
-import useRouteNavigate from '../hooks/common/useRouteNavigate';
-import EmbeddingPage from './EmbeddingPage';
+import createLinkifyPlugin from '@draft-js-plugins/linkify';
+import BlockStyleButton from './BlockStyleButton';
+import InlineStyleButton from './InlineStyleButton';
+import Editor from '@draft-js-plugins/editor';
 
 const linkifyPlugin = createLinkifyPlugin({
   component: (props) => (
@@ -49,46 +46,45 @@ const linkifyPlugin = createLinkifyPlugin({
 const imagePlugin = createImagePlugin();
 const plugins = [linkifyPlugin, imagePlugin];
 
-const WritePage = () => {
+const EmbeddingContainer = ({
+  onClose,
+  onEmbedding,
+}: {
+  onClose: () => void;
+  onEmbedding: (embeddingItem: embeddingType) => void;
+}) => {
   const {
     editorRef,
-    isUploadOpen,
-    setIsUploadOpen,
-    isCategoryOpen,
-    setIsCategoryOpen,
-    category,
-    setCategory,
-    title,
-    setTitle,
-    editorState,
-    toggleBlockType,
-    toggleInlineStyle,
-    getBlockStyle,
-    handlePastedFiled,
-    onUpload,
-    onUploadImageButtonClick,
     inputRef,
     images,
     thumbnail,
     setThumbnail,
+    isUploadOpen,
+    isCategoryOpen,
+    category,
+    title,
+    editorState,
+    toggleBlockType,
+    toggleInlineStyle,
+    getBlockStyle,
+    setIsUploadOpen,
+    setIsCategoryOpen,
+    setCategory,
+    setTitle,
+    onUpload,
+    onUploadImageButtonClick,
+    handlePastedFiled,
+    handleEditorChange,
     onUploadPostClick,
     tryPostIsLoading,
-    handleEditorChange,
-    isEmbeddingOpen,
-    onClickEmbeddingButton,
-    onClickEmbeddingClose,
-    blockRenderFn,
-    // blockRenderMap,
-    onAddEmbedding,
-  } = useWrite();
-  const { onClickIcon: goHome } = useRouteNavigate('/');
+  } = useEmbedding(onClose, onEmbedding);
   return (
-    <div className="w-full min-h-screen h-full flex flex-col items-center justify-start">
-      <div className="shrink-0 w-full flex items-center justify-between px-16 py-20 border-b-[0.5px] border-gray-100">
-        <Logo className="cursor-pointer" onClick={goHome} />
+    <div className="w-full min-h-full h-full flex flex-col items-center justify-start">
+      <div className="shrink-0 w-full flex items-center justify-between pb-20 border-b-[0.5px] border-gray-100">
+        <Prev className="cursor-pointer" onClick={onClose} height={48} />
         <div className="flex items-center justify-end relative">
           <RectButton
-            text="업로드"
+            text="등록"
             type="fill"
             h={'45px'}
             onClick={() => {
@@ -186,41 +182,35 @@ const WritePage = () => {
           </div>
         </div>
       </div>
-      <div className="w-full flex flex-col items-center justify-start grow bg-gray-50 overflow-hidden">
-        <div className="w-full px-16 py-8 z-10 flex items-center justify-start border-b-[0.5px] border-gray-100 bg-white shadow-toolbar">
-          <BlockStyleButton
-            editorState={editorState}
-            onToggle={toggleBlockType}
-          />
-          <InlineStyleButton
-            editorState={editorState}
-            onToggle={toggleInlineStyle}
-          />
-          <div className="flex items-center justify-start gap-4 px-4">
-            <Image
-              className="cursor-pointer"
-              width={24}
-              height={24}
-              onClick={onUploadImageButtonClick}
+      <div className="w-full flex items-start justify-start grow overflow-hidden gap-x-20">
+        <div className="grow h-full flex flex-col items-start justify-start relative overflow-y-scroll">
+          <div className="absolute top-0 w-full py-8 z-10 flex items-center justify-start bg-white border-b border-gray-50">
+            <BlockStyleButton
+              editorState={editorState}
+              onToggle={toggleBlockType}
             />
-            <EmbeddingBox
-              className="cursor-pointer"
-              width={24}
-              height={24}
-              onClick={onClickEmbeddingButton}
+            <InlineStyleButton
+              editorState={editorState}
+              onToggle={toggleInlineStyle}
+            />
+            <div className="flex items-center justify-start gap-4 px-4">
+              <Image
+                className="cursor-pointer"
+                width={24}
+                height={24}
+                onClick={onUploadImageButtonClick}
+              />
+            </div>
+            <input
+              ref={inputRef}
+              className="hidden"
+              type="file"
+              accept="image/*"
+              onChange={onUpload}
             />
           </div>
-          <input
-            ref={inputRef}
-            className="hidden"
-            type="file"
-            accept="image/*"
-            onChange={onUpload}
-          />
-        </div>
-        <div className="w-full flex flex-col items-center justify-start overflow-hidden grow relative">
-          <div className="editor grow w-3/5 py-60 bg-white shadow-editor overflow-y-scroll">
-            <div className="w-full pt-30 pb-20 px-24 bg-white">
+          <div className="editor w-full grow ">
+            <div className="w-full pt-30 pb-20 px-24 bg-white mt-[50px]">
               <input
                 type="text"
                 placeholder="제목을 입력하세요"
@@ -237,35 +227,33 @@ const WritePage = () => {
               handlePastedFiles={handlePastedFiled}
               // handleKeyCommand={handleKeyCommand}
               blockStyleFn={getBlockStyle}
-              blockRendererFn={blockRenderFn}
-              // blockRenderMap={blockRenderMap}
               placeholder="내용을 입력하세요."
               ref={editorRef}
             />
           </div>
-          <div className="absolute right-0 top-0 h-full bg-white w-1/6 py-30 px-16 overflow-y-scroll">
-            <div className="font-bold text-18">대표 사진</div>
-            <div className="w-full h-px bg-gray-50 my-20" />
-            <div className="w-full flex flex-col gap-y-16">
-              {images.length < 1 ? (
-                <div className="w-full text-center text-14 text-gray-600">
-                  대표 사진 설정을 위해
-                  <br /> 이미지를 업로드해주세요.
-                </div>
-              ) : (
-                images.map((image, index) => (
-                  <img
-                    key={index}
-                    src={image}
-                    alt="image"
-                    className={`w-full h-auto object-cover rounded-sm ${
-                      thumbnail === image ? 'border-2 border-blue-500' : ''
-                    }`}
-                    onClick={() => setThumbnail(image)}
-                  />
-                ))
-              )}
-            </div>
+        </div>
+        <div className="min-w-[200px] w-1/5 h-full overflow-y-scroll bg-white py-30 px-16">
+          <div className="font-bold text-18">대표 사진</div>
+          <div className="w-full h-px bg-gray-50 my-20" />
+          <div className="w-full flex gap-y-16">
+            {images.length < 1 ? (
+              <div className="w-full text-center text-14 text-gray-600">
+                대표 사진 설정을 위해
+                <br /> 이미지를 업로드해주세요.
+              </div>
+            ) : (
+              images.map((image, index) => (
+                <img
+                  key={index}
+                  src={image}
+                  alt="image"
+                  className={`w-full h-auto object-cover rounded-sm ${
+                    thumbnail === image ? 'border-2 border-blue-500' : ''
+                  }`}
+                  onClick={() => setThumbnail(image)}
+                />
+              ))
+            )}
           </div>
         </div>
       </div>
@@ -276,14 +264,8 @@ const WritePage = () => {
           </div>
         </div>
       )}
-      {isEmbeddingOpen && (
-        <EmbeddingPage
-          onClose={onClickEmbeddingClose}
-          onEmbedding={onAddEmbedding}
-        />
-      )}
     </div>
   );
 };
 
-export default WritePage;
+export default EmbeddingContainer;

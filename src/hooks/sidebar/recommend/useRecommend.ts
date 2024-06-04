@@ -2,13 +2,10 @@ import { postListItemUserType } from '../../../data/type';
 import { useQuery } from 'react-query';
 import { getRecommendIslandApi } from '../../../api/mainApi';
 import useAuthStore from '../../../store/useAuthStore';
+import { CustomError } from '../../../api/customError';
 
 const useRecommend = () => {
   const { isLoggedIn, logout } = useAuthStore();
-
-  if (!isLoggedIn) {
-    logout();
-  }
 
   const {
     data: recommend,
@@ -28,8 +25,13 @@ const useRecommend = () => {
       onSuccess: (data) => {
         console.log('유저 추천 성공 --> ', data);
       },
-      onError: (error) => {
-        console.log('유저 추천 실패 --> ', error);
+      onError: (err) => {
+        console.log('유저 추천 실패 --> ', err);
+        const error = err as CustomError;
+        if (error.response?.status === 401) {
+          alert('로그인이 필요합니다.');
+          logout();
+        }
       },
     },
   );

@@ -5,9 +5,11 @@ import htmlToDraft from 'html-to-draftjs';
 import { useMutation } from 'react-query';
 import { deletePostApi } from '../../api/postApi';
 import { useNavigate } from 'react-router-dom';
+import EmbeddingBlock from '../../components/writePage/EmbeddingBlock';
 
 export const usePostContainer = (moldevId: string, postId: number) => {
   const { post, postIsLoading, postIsError } = usePost(moldevId, postId);
+  const postToHtml: string | TrustedHTML = post?.postInfo.content || '';
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const navigate = useNavigate();
 
@@ -44,13 +46,33 @@ export const usePostContainer = (moldevId: string, postId: number) => {
     },
   );
 
+  const blockRenderFn = (contentBlock: any) => {
+    const type = contentBlock.getType();
+    if (type === 'atomic') {
+      const entity = contentBlock.getEntityAt(0);
+      if (!entity) return null;
+      const entityData = editorState.getCurrentContent().getEntity(entity);
+      const entityType = entityData.getType();
+      if (entityType === 'embedding') {
+        return {
+          component: EmbeddingBlock,
+          editable: false,
+        };
+      }
+    }
+
+    return null;
+  };
+
   return {
     post,
+    postToHtml,
     postIsLoading,
     postIsError,
     editorState,
     setEditorState,
     onMoveToEdit,
     tryDeletePost,
+    blockRenderFn,
   };
 };

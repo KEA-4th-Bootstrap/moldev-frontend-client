@@ -41,8 +41,10 @@ authAxios.interceptors.response.use(
     return response;
   },
   async (error) => {
+    console.log('authAxios 에러 발생 --> ', error);
     const originalRequest = error.config;
     if (error.response?.status === 401 && !originalRequest._retry) {
+      console.log('토큰 만료로 인한 재요청 --> ', error);
       originalRequest._retry = true;
       const accessToken = getAccessToken();
       if (accessToken) {

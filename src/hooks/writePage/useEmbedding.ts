@@ -1,67 +1,36 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { categoryType } from '../../data/type';
+import { getMoldevId } from '../../api/manageLocalStorage';
 import {
   AtomicBlockUtils,
-  BlockMapBuilder,
-  // ContentState,
   DraftHandleValue,
   EditorState,
-  Modifier,
   RichUtils,
-  convertFromHTML,
 } from 'draft-js';
 import { stateToHTML } from 'draft-js-export-html';
+import { useMutation } from 'react-query';
+import { postImageApi, postWriteApi } from '../../api/postApi';
+import { categoryType, embeddingType } from '../../data/type';
 import Editor from '@draft-js-plugins/editor';
-import {
-  getPostImagesApi,
-  patchPostApi,
-  postImageApi,
-} from '../../api/postApi';
-import { useMutation, useQuery } from 'react-query';
-import { useNavigate, useParams } from 'react-router-dom';
-import { getMoldevId } from '../../api/manageLocalStorage';
-// import htmlToDraft from 'html-to-draftjs';
-import usePost from './usePost';
 
-export const useEdit = () => {
-  const { postId } = useParams();
+export const useEmbedding = (
+  onClose: () => void,
+  onEmbedding: (embeddingItem: embeddingType) => void,
+) => {
   const moldevId = getMoldevId();
-  const { post } = usePost(moldevId || '', Number(postId || 0));
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
-  const navigate = useNavigate();
   const editorRef = useRef<Editor>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [images, setImages] = useState<string[]>([]);
+  const [thumbnail, setThumbnail] = useState<string>('');
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [category, setCategory] = useState<categoryType | null>(null);
   const [title, setTitle] = useState('');
-  const [images, setImages] = useState<string[]>([]);
-  const [thumbnail, setThumbnail] = useState<string>('');
-
-  const { isLoading: imagesIsLoading, isError: imagesIsError } = useQuery(
-    `images-${postId}`,
-    () =>
-      getPostImagesApi(Number(postId || 0)).then(
-        (res) => res.data.data.data.images,
-      ),
-    {
-      enabled: !!postId,
-      refetchOnWindowFocus: false,
-      refetchOnMount: true,
-      onSuccess: (data) => {
-        console.log('이미지 가져오기 성공 --> ', data);
-        setImages(data);
-      },
-      onError: (error) => {
-        console.log('이미지 가져오기 실패 --> ', error);
-      },
-    },
+  const [editorState, setEditorState] = useState(() =>
+    EditorState.createEmpty(),
   );
-
   const toggleBlockType = (blockType: string) => {
     setEditorState(RichUtils.toggleBlockType(editorState, blockType));
   };
-
   const toggleInlineStyle = (inlineStyle: string) => {
     setEditorState(RichUtils.toggleInlineStyle(editorState, inlineStyle));
   };
@@ -78,59 +47,6 @@ export const useEdit = () => {
         return 'unstyled';
     }
   };
-
-  // useEffect(() => {
-  //   if (!post) return;
-  //   setTitle(post.postInfo.title);
-  //   setCategory(post.postInfo.category || 'ACTIVITY');
-  //   setThumbnail(post.postInfo.thumbnail);
-
-  //   const htmlContent = convertFromHTML(post.postInfo.content);
-  //   const htmlContentMap = BlockMapBuilder.createFromArray(
-  //     htmlContent.contentBlocks,
-  //   );
-  //   const newContent = Modifier.replaceWithFragment(
-  //     editorState.getCurrentContent(),
-  //     editorState.getSelection(),
-  //     htmlContentMap,
-  //   );
-  //   setEditorState(
-  //     EditorState.push(editorState, newContent, 'insert-fragment'),
-  //   );
-  //   // setImages([post.postInfo.thumbnail]);
-  //   // const blocksFromHtml = htmlToDraft(post.postInfo.content);
-  //   // console.log('HTML TO DRAFT --> ', blocksFromHtml);
-  //   // if (blocksFromHtml) {
-  //   //   const { contentBlocks, entityMap } = blocksFromHtml;
-  //   //   console.log(contentBlocks, entityMap);
-  //   //   const contentState = ContentState.createFromBlockArray(
-  //   //     contentBlocks,
-  //   //     entityMap,
-  //   //   );
-  //   //   setEditorState(EditorState.createWithContent(contentState));
-  //   // }
-  // }, [post]);
-
-  useEffect(() => {
-    if (!post) return;
-    setTitle(post.postInfo.title);
-    setCategory(post.postInfo.category || 'ACTIVITY');
-    setThumbnail(post.postInfo.thumbnail);
-
-    const htmlContent = convertFromHTML(post.postInfo.content);
-    const htmlContentMap = BlockMapBuilder.createFromArray(
-      htmlContent.contentBlocks,
-    );
-
-    setEditorState((prevEditorState) => {
-      const newContent = Modifier.replaceWithFragment(
-        prevEditorState.getCurrentContent(),
-        prevEditorState.getSelection(),
-        htmlContentMap,
-      );
-      return EditorState.push(prevEditorState, newContent, 'insert-fragment');
-    });
-  }, [post]);
 
   useEffect(() => {
     const options = {
@@ -179,10 +95,10 @@ export const useEdit = () => {
           setThumbnail(res.data.data.data);
         }
         setImages([...images, res.data.data.data]);
-        console.log('이미지 업로드 성공 --> ', res);
+        console.log('임베딩에서 이미지 업로드 성공 --> ', res);
       },
       onError: (err) => {
-        console.log('이미지 업로드 실패 --> ', err);
+        console.log('임베딩에서 이미지 업로드 실패 --> ', err);
       },
     },
   );
@@ -211,7 +127,7 @@ export const useEdit = () => {
     }
   }, []);
 
-  const { mutate: tryPostWrite, isLoading: tryEditIsLoading } = useMutation(
+  const { mutate: tryPostWrite, isLoading: tryPostIsLoading } = useMutation(
     ({
       title,
       moldevId,
@@ -227,22 +143,31 @@ export const useEdit = () => {
       thumbnail: string;
       category: categoryType;
     }) =>
-      patchPostApi(
-        Number(postId || 0),
+      postWriteApi(
         title,
         moldevId,
         content,
         profileContent,
         thumbnail,
+        images,
         category,
       ),
     {
       onSuccess: (data) => {
-        console.log('글 수정 성공 --> ', data);
-        navigate(`/${moldevId}/${postId}`, { replace: true });
+        console.log('글 작성 성공 --> ', data);
+
+        onEmbedding({
+          title: data.data.data.data.title,
+          content: data.data.data.data.content,
+          thumbnail: data.data.data.data.thumbnail,
+          category: category || 'ACTIVITY',
+          url: data.data.data.data.frontUrl,
+        });
+
+        onClose();
       },
       onError: (error) => {
-        console.log('글 수정 실패 --> ', error);
+        console.log('글 작성 실패 --> ', error);
       },
     },
   );
@@ -298,7 +223,7 @@ export const useEdit = () => {
           if (!entityKey) return null;
           const entity = contentState.getEntity(entityKey);
           const entityType = entity.getType();
-          if (entityType === 'image' || entityType === 'IMAGE') {
+          if (entityType === 'image') {
             return entity.getData().src;
           }
           return null;
@@ -319,30 +244,30 @@ export const useEdit = () => {
   };
 
   return {
+    moldevId,
     editorRef,
-    isUploadOpen,
-    setIsUploadOpen,
-    isCategoryOpen,
-    setIsCategoryOpen,
-    category,
-    setCategory,
-    title,
-    setTitle,
-    editorState,
-    toggleBlockType,
-    toggleInlineStyle,
-    getBlockStyle,
-    handlePastedFiled,
-    onUpload,
-    onUploadImageButtonClick,
     inputRef,
     images,
     thumbnail,
     setThumbnail,
-    onUploadPostClick,
-    tryEditIsLoading,
-    imagesIsLoading,
-    imagesIsError,
+    isUploadOpen,
+    isCategoryOpen,
+    category,
+    title,
+    editorState,
+    toggleBlockType,
+    toggleInlineStyle,
+    getBlockStyle,
+    setEditorState,
+    setIsUploadOpen,
+    setIsCategoryOpen,
+    setCategory,
+    setTitle,
+    onUpload,
+    onUploadImageButtonClick,
+    handlePastedFiled,
     handleEditorChange,
+    onUploadPostClick,
+    tryPostIsLoading,
   };
 };
