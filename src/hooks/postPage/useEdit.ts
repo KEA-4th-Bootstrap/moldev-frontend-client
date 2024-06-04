@@ -2,10 +2,13 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { categoryType } from '../../data/type';
 import {
   AtomicBlockUtils,
-  ContentState,
+  BlockMapBuilder,
+  // ContentState,
   DraftHandleValue,
   EditorState,
+  Modifier,
   RichUtils,
+  convertFromHTML,
 } from 'draft-js';
 import { stateToHTML } from 'draft-js-export-html';
 import Editor from '@draft-js-plugins/editor';
@@ -17,7 +20,7 @@ import {
 import { useMutation, useQuery } from 'react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getMoldevId } from '../../api/manageLocalStorage';
-import htmlToDraft from 'html-to-draftjs';
+// import htmlToDraft from 'html-to-draftjs';
 import usePost from './usePost';
 
 export const useEdit = () => {
@@ -76,23 +79,57 @@ export const useEdit = () => {
     }
   };
 
+  // useEffect(() => {
+  //   if (!post) return;
+  //   setTitle(post.postInfo.title);
+  //   setCategory(post.postInfo.category || 'ACTIVITY');
+  //   setThumbnail(post.postInfo.thumbnail);
+
+  //   const htmlContent = convertFromHTML(post.postInfo.content);
+  //   const htmlContentMap = BlockMapBuilder.createFromArray(
+  //     htmlContent.contentBlocks,
+  //   );
+  //   const newContent = Modifier.replaceWithFragment(
+  //     editorState.getCurrentContent(),
+  //     editorState.getSelection(),
+  //     htmlContentMap,
+  //   );
+  //   setEditorState(
+  //     EditorState.push(editorState, newContent, 'insert-fragment'),
+  //   );
+  //   // setImages([post.postInfo.thumbnail]);
+  //   // const blocksFromHtml = htmlToDraft(post.postInfo.content);
+  //   // console.log('HTML TO DRAFT --> ', blocksFromHtml);
+  //   // if (blocksFromHtml) {
+  //   //   const { contentBlocks, entityMap } = blocksFromHtml;
+  //   //   console.log(contentBlocks, entityMap);
+  //   //   const contentState = ContentState.createFromBlockArray(
+  //   //     contentBlocks,
+  //   //     entityMap,
+  //   //   );
+  //   //   setEditorState(EditorState.createWithContent(contentState));
+  //   // }
+  // }, [post]);
+
   useEffect(() => {
     if (!post) return;
     setTitle(post.postInfo.title);
     setCategory(post.postInfo.category || 'ACTIVITY');
     setThumbnail(post.postInfo.thumbnail);
-    // setImages([post.postInfo.thumbnail]);
-    const blocksFromHtml = htmlToDraft(post.postInfo.content);
-    console.log('HTML TO DRAFT --> ', blocksFromHtml);
-    if (blocksFromHtml) {
-      const { contentBlocks, entityMap } = blocksFromHtml;
-      console.log(contentBlocks, entityMap);
-      const contentState = ContentState.createFromBlockArray(
-        contentBlocks,
-        entityMap,
+
+    const htmlContent = convertFromHTML(post.postInfo.content);
+    const htmlContentMap = BlockMapBuilder.createFromArray(
+      htmlContent.contentBlocks,
+    );
+
+    setEditorState((prevEditorState) => {
+      const newContent = Modifier.replaceWithFragment(
+        prevEditorState.getCurrentContent(),
+        prevEditorState.getSelection(),
+        htmlContentMap,
       );
-      setEditorState(EditorState.createWithContent(contentState));
-    }
+      return EditorState.push(prevEditorState, newContent, 'insert-fragment');
+    });
   }, [post]);
 
   useEffect(() => {
