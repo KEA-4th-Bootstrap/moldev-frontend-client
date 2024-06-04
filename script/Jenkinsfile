@@ -14,7 +14,6 @@ pipeline {
                     sh """
                             cp -f ${front} .env
                             cat .env
-                            npm install
                     """
                 }
             }
