@@ -1,8 +1,5 @@
 pipeline {
     agent any
-    environment {
-        AWS_PUBLIC_IP = '{ec2-instance-public-ip}'
-    }
 
     stages {
         stage('Repository') {
@@ -103,7 +100,6 @@ pipeline {
                 color: '#00FF00', 
                 message: """
                     SUCCESS: Job ${env.JOB_NAME} [${env.BUILD_NUMBER}]
-                    [TEST URL: http://${AWS_PUBLIC_IP}:3000]
                 """
             )
         }
