@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    environment {
+        AWS_PUBLIC_IP = '{ec2-instance-public-ip}'
+    }
 
     stages {
         stage('Repository') {
@@ -96,7 +99,7 @@ pipeline {
     post {
         success {
             slackSend (
-                channel: '#test', 
+                channel: '#bootstrap-jenkins', 
                 color: '#00FF00', 
                 message: """
                     SUCCESS: Job ${env.JOB_NAME} [${env.BUILD_NUMBER}]
@@ -106,7 +109,7 @@ pipeline {
         }
         failure {
             slackSend (
-                channel: '#test', 
+                channel: '#bootstrap-jenkins', 
                 color: '#FF0000', 
                 message: "FAIL: Job ${env.JOB_NAME} [${env.BUILD_NUMBER}]"
             )
