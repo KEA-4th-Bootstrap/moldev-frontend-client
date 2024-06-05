@@ -92,4 +92,24 @@ pipeline {
             }
         }
     }
+
+    post {
+        success {
+            slackSend (
+                channel: '#test', 
+                color: '#00FF00', 
+                message: """
+                    SUCCESS: Job ${env.JOB_NAME} [${env.BUILD_NUMBER}] (${NGROK_DOMAIN}) 
+                    [TEST URL: http://${AWS_PUBLIC_IP}:3000]
+                """
+            )
+        }
+        failure {
+            slackSend (
+                channel: '#test', 
+                color: '#FF0000', 
+                message: "FAIL: Job ${env.JOB_NAME} [${env.BUILD_NUMBER}] (${NGROK_DOMAIN})"
+            )
+        }
+    }
 }
