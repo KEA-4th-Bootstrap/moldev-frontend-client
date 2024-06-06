@@ -64,7 +64,7 @@ const WritePage = () => {
     toggleBlockType,
     toggleInlineStyle,
     getBlockStyle,
-    handlePastedFiled,
+    // handlePastedFiled,
     onUpload,
     onUploadImageButtonClick,
     inputRef,
@@ -77,7 +77,7 @@ const WritePage = () => {
     isEmbeddingOpen,
     onClickEmbeddingButton,
     onClickEmbeddingClose,
-    blockRenderFn,
+    // blockRenderFn,
     // blockRenderMap,
     onAddEmbedding,
   } = useWrite();
@@ -234,10 +234,10 @@ const WritePage = () => {
               plugins={plugins}
               editorState={editorState}
               onChange={handleEditorChange}
-              handlePastedFiles={handlePastedFiled}
+              // handlePastedFiles={handlePastedFiled}
               // handleKeyCommand={handleKeyCommand}
               blockStyleFn={getBlockStyle}
-              blockRendererFn={blockRenderFn}
+              // blockRendererFn={blockRenderFn}
               // blockRenderMap={blockRenderMap}
               placeholder="내용을 입력하세요."
               ref={editorRef}

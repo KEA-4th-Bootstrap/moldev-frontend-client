@@ -13,7 +13,7 @@ const SearchResultPostContainer = ({
   userName?: string;
   profileImage?: string;
 }) => {
-  const { post, userInfo, onClick } = useSearchResultPost(
+  const { post, userInfo, onClick, date } = useSearchResultPost(
     item,
     moldevId,
     userName,
@@ -35,14 +35,19 @@ const SearchResultPostContainer = ({
           alt={post.title}
         />
       </div>
-      <div className="w-full flex items-center justify-start p-8 gap-8 text-12">
-        <img
-          className="w-[20px] h-[20px] rounded-full"
-          src={userInfo.profileImgUrl}
-          alt={userInfo.nickname}
-        />
-        <div className="grow font-medium text-black">{userInfo.nickname}</div>
-        <div className="text-gray-300">{post.viewCount}</div>
+      <div className="w-full flex items-center justify-between p-8 gap-8 text-12">
+        <div className="flex items-center justify-start gap-8">
+          <img
+            className="w-[20px] h-[20px] rounded-full"
+            src={userInfo.profileImgUrl}
+            alt={userInfo.nickname}
+          />
+          <div className="grow font-medium text-black">{userInfo.nickname}</div>
+        </div>
+        <div className="flex items-center justify-start gap-8">
+          <div className="text-gray-300">{date} ∙</div>
+          <div className="text-gray-300"> {post.viewCount}회 읽음</div>
+        </div>
       </div>
     </div>
   );

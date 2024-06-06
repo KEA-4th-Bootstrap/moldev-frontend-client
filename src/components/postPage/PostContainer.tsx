@@ -1,6 +1,6 @@
 import { ReactComponent as Pin } from '../../assets/icons/icon_pin.svg';
 import { categoryToKorean } from '../../data/type';
-// import Editor from '@draft-js-plugins/editor';
+import Editor from '@draft-js-plugins/editor';
 import { ReactComponent as Url } from '../../assets/icons/icon_url.svg';
 import { ReactComponent as Plane } from '../../assets/icons/icon_plane.svg';
 import CommentContainer from './CommentContainer';
@@ -8,13 +8,13 @@ import { usePostContainer } from '../../hooks/postPage/usePostContainer';
 import LoadingSpinner from '../common/LoadingSpinner';
 import ErrorContainer from '../common/ErrorContainer';
 import { useDateFormat } from '../../hooks/common/useDateFormat';
-// import createImagePlugin from '@draft-js-plugins/image';
+import createImagePlugin from '@draft-js-plugins/image';
 import { getMoldevId } from '../../api/manageLocalStorage';
 import RectButton from '../common/RectButton';
 import PostRecentContainer from './PostRecentContainer';
 
-// const imagePlugin = createImagePlugin();
-// const plugins = [imagePlugin];
+const imagePlugin = createImagePlugin();
+const plugins = [imagePlugin];
 
 const PostContainer = ({
   moldevId,
@@ -28,14 +28,12 @@ const PostContainer = ({
   const myMoldevId = getMoldevId();
   const {
     post,
-    postToHtml,
     postIsLoading,
     postIsError,
-    // editorState,
-    // setEditorState,
+    editorState,
+    setEditorState,
     onMoveToEdit,
     tryDeletePost,
-    // blockRenderFn,
   } = usePostContainer(moldevId, postId);
   const date = useDateFormat(post?.postInfo.lastModifiedDate);
 
@@ -106,17 +104,12 @@ const PostContainer = ({
           </div>
           <div className="w-full grow px-48 py-32 flex flex-col items-center justify-start">
             <div className="editor flex flex-col items-center justify-start w-full h-full">
-              {/* <Editor
+              <Editor
                 plugins={plugins}
                 editorState={editorState}
                 readOnly={true}
                 onChange={setEditorState}
-                blockRendererFn={blockRenderFn}
-              /> */}
-              <div
-                className="w-full flex flex-col items-start justify-around"
-                dangerouslySetInnerHTML={{ __html: postToHtml as string }}
-              ></div>
+              />
             </div>
           </div>
           <div className="w-full flex itemcen justify-end shrink-0 gap-x-16 px-48 pt-60 pb-36 border-b border-gray-50">

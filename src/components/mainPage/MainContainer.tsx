@@ -5,7 +5,7 @@ import useIsland from '../../hooks/moldevPage/useIslandContainer';
 import LineHeaderContainer from './LineHeaderContainer';
 
 const MainContainer = () => {
-  const { lightIntensity, positions, colors } = useIsland();
+  const { lightIntensity, positions, colors } = useIsland(false);
   return (
     <div className="w-2/3 min-h-screen h-screen flex flex-col items-center justify-start bg-gradient object-cover text-black gap-y-50 py-60 overflow-y-scroll">
       <div className="flex flex-col items-center justify-center gap-10">

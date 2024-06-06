@@ -19,6 +19,7 @@ const usePost = (moldevId: string, postId: number) => {
           userInfo: {
             ...data.data.data.postWriterInfo,
           },
+          viewCount: data.data.data.postInfo.viewCount,
         };
         setPost(post);
       },

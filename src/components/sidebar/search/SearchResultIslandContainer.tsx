@@ -11,7 +11,11 @@ const SearchResultIslandContainer = ({
   return (
     <div
       className="w-full flex flex-col rounded-block bg-white hover:bg-gray-100/40 px-8 py-7 gap-y-10 cursor-pointer"
-      onClick={() => navigate(`/${item.moldevId}`)}
+      onClick={() =>
+        navigate(`/${item.moldevId}`, {
+          state: { nickname: item.nickname, islandName: item.islandName },
+        })
+      }
     >
       <div className="w-full flex items-center justify-start gap-x-13">
         <img

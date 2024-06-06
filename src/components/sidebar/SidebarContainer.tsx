@@ -9,8 +9,13 @@ import LoginPage from '../../pages/LoginPage';
 import LogoutPage from '../../pages/LogoutPage';
 import MyPage from '../../pages/MyPage';
 import ListPage from '../../pages/sidebar/ListPage';
+import { sideType } from '../../data/type';
 
-const SidebarContainer = () => {
+const SidebarContainer = ({
+  defaultSelected,
+}: {
+  defaultSelected: sideType;
+}) => {
   const {
     clicked,
     setClicked,
@@ -21,7 +26,7 @@ const SidebarContainer = () => {
     setIsLoginOpen,
     setIsLogoutOpen,
     setIsMyPageOpen,
-  } = useSidebar();
+  } = useSidebar(defaultSelected);
 
   return (
     <>

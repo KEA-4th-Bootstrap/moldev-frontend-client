@@ -2,12 +2,9 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { categoryType, embeddingType } from '../../data/type';
 import {
   AtomicBlockUtils,
-  // ContentBlock,
-  // DefaultDraftBlockRenderMap,
-  DraftHandleValue,
+  // DraftHandleValue,
   EditorState,
   RichUtils,
-  convertToRaw,
 } from 'draft-js';
 import { stateToHTML } from 'draft-js-export-html';
 import Editor from '@draft-js-plugins/editor';
@@ -15,11 +12,9 @@ import { postImageApi, postWriteApi } from '../../api/postApi';
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import { getMoldevId } from '../../api/manageLocalStorage';
-import EmbeddingBlock from '../../components/writePage/EmbeddingBlock';
-import draftToHtml from 'draftjs-to-html';
+// import EmbeddingBlock from '../../components/writePage/EmbeddingBlock';
 import { CustomError } from '../../api/customError';
 import useAuthStore from '../../store/useAuthStore';
-// import Immutable from 'immutable';
 
 export const useWrite = () => {
   const { logout } = useAuthStore();
@@ -37,84 +32,6 @@ export const useWrite = () => {
   const [editorState, setEditorState] = useState(() =>
     EditorState.createEmpty(),
   );
-  const toggleBlockType = (blockType: string) => {
-    setEditorState(RichUtils.toggleBlockType(editorState, blockType));
-  };
-
-  const toggleInlineStyle = (inlineStyle: string) => {
-    setEditorState(RichUtils.toggleInlineStyle(editorState, inlineStyle));
-  };
-
-  const getBlockStyle = (block: any): string => {
-    switch (block.getType()) {
-      case 'left':
-        return 'align-left';
-      case 'center':
-        return 'align-center';
-      case 'right':
-        return 'align-right';
-      default:
-        return 'unstyled';
-    }
-  };
-  useEffect(() => {
-    const options = {
-      blockStyleFn: (block: any) => {
-        if (
-          block.getType() === 'left' ||
-          block.getType() === 'center' ||
-          block.getType() === 'right'
-        ) {
-          return {
-            style: {
-              'text-align': block.getType(),
-            },
-          };
-        }
-      },
-    };
-
-    console.log(stateToHTML(editorState.getCurrentContent(), options));
-    console.log('메세지 : ', editorState.getCurrentContent().getPlainText());
-    console.log('내용 오리진 : ', editorState.getCurrentContent());
-  }, [editorState]);
-
-  const draftToHTML = () => {
-    const rawContentState = convertToRaw(editorState.getCurrentContent());
-    const markup = draftToHtml(rawContentState, {}, false, (entity) => {
-      if (entity.type === 'embedding') {
-        const data = entity.data;
-        return `<a href="${data.url}" target="_blank" rel="noopener noreferrer">
-    <div class="embedding-block">
-      <img src="${data.thumbnail}" alt="link" class="embedding-thumbnail" />
-      <div class="embedding-content">
-        <div class="embedding-category">${data.category}</div>
-        <div class="embedding-title">${data.title}</div>
-        <div class="embedding-description">${data.content}</div>
-        <div class="embedding-url">${data.url}</div>
-      </div>
-    </div>
-  </a>`;
-      }
-    });
-    return markup;
-  };
-
-  const insertImage = (url: string) => {
-    const contentState = editorState.getCurrentContent();
-    const contentStateWithEntity = contentState.createEntity(
-      'image',
-      'IMMUTABLE',
-      { src: url },
-    );
-    const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
-    const newEditorState = EditorState.set(editorState, {
-      currentContent: contentStateWithEntity,
-    });
-    setEditorState(
-      AtomicBlockUtils.insertAtomicBlock(newEditorState, entityKey, ' '),
-    );
-  };
 
   const { mutate: tryUploadImage } = useMutation(
     (file: File) => postImageApi(file),
@@ -138,30 +55,6 @@ export const useWrite = () => {
     },
   );
 
-  const handlePastedFiled = (files: Blob[]): DraftHandleValue => {
-    postImageApi(files[0] as File)
-      .then((res) => {
-        console.log(res);
-        insertImage(res.data.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-
-    return 'handled';
-  };
-
-  const onUpload = (e: any) => {
-    const file = e.target.files[0];
-    tryUploadImage(file);
-  };
-
-  const onUploadImageButtonClick = useCallback(() => {
-    if (inputRef.current) {
-      inputRef.current.click();
-    }
-  }, []);
-
   const { mutate: tryPostWrite, isLoading: tryPostIsLoading } = useMutation(
     ({
       title,
@@ -169,6 +62,7 @@ export const useWrite = () => {
       content,
       profileContent,
       thumbnail,
+      images,
       category,
     }: {
       title: string;
@@ -176,6 +70,7 @@ export const useWrite = () => {
       content: string;
       profileContent: string;
       thumbnail: string;
+      images: string[];
       category: categoryType;
     }) =>
       postWriteApi(
@@ -202,39 +97,6 @@ export const useWrite = () => {
       },
     },
   );
-
-  const onUploadPostClick = () => {
-    const current = draftToHTML();
-    if (!category) {
-      alert('카테고리를 입력해주세요.');
-    } else if (!title) {
-      alert('제목을 입력해주세요.');
-    } else if (!thumbnail) {
-      alert('대표 사진을 등록해주세요.');
-    } else if (editorState.getCurrentContent().getPlainText().length === 0) {
-      alert('내용을 입력해주세요.');
-    } else {
-      console.log('업로드 시도');
-      console.log('제목 : ', title);
-      console.log('내용 : ', current);
-      console.log(
-        '순수 글자 : ',
-        editorState.getCurrentContent().getPlainText(),
-      );
-      console.log('대표 사진 : ', thumbnail);
-      console.log('카테고리 : ', category);
-      tryPostWrite({
-        title: title,
-        moldevId: moldevId || '',
-        content: current,
-        profileContent: editorState.getCurrentContent().getPlainText(),
-        thumbnail: thumbnail,
-        category: category,
-      });
-
-      setIsUploadOpen(false);
-    }
-  };
 
   const handleEditorChange = (newEditorState: EditorState) => {
     const contentState = newEditorState.getCurrentContent();
@@ -275,12 +137,39 @@ export const useWrite = () => {
     setEditorState(newEditorState);
   };
 
-  const onClickEmbeddingButton = () => {
-    setIsEmbeddingOpen(true);
-  };
+  const onUploadPostClick = () => {
+    // const current = draftToHTML();
+    if (!category) {
+      alert('카테고리를 입력해주세요.');
+    } else if (!title) {
+      alert('제목을 입력해주세요.');
+    } else if (!thumbnail) {
+      alert('대표 사진을 등록해주세요.');
+    } else if (editorState.getCurrentContent().getPlainText().length === 0) {
+      alert('내용을 입력해주세요.');
+    } else {
+      console.log('업로드 시도');
+      console.log('제목 : ', title);
+      console.log('내용 : ', stateToHTML(editorState.getCurrentContent()));
+      console.log(
+        '순수 글자 : ',
+        editorState.getCurrentContent().getPlainText(),
+      );
+      console.log('대표 사진 : ', thumbnail);
+      console.log('이미지 : ', images);
+      console.log('카테고리 : ', category);
+      tryPostWrite({
+        title: title,
+        moldevId: moldevId || '',
+        content: stateToHTML(editorState.getCurrentContent()),
+        profileContent: editorState.getCurrentContent().getPlainText(),
+        thumbnail: thumbnail,
+        images: images,
+        category: category,
+      });
 
-  const onClickEmbeddingClose = () => {
-    setIsEmbeddingOpen(false);
+      setIsUploadOpen(false);
+    }
   };
 
   const onAddEmbedding = (item: embeddingType) => {
@@ -306,6 +195,158 @@ export const useWrite = () => {
     );
   };
 
+  const getBlockStyle = (block: any): string => {
+    switch (block.getType()) {
+      case 'left':
+        return 'align-left';
+      case 'center':
+        return 'align-center';
+      case 'right':
+        return 'align-right';
+      default:
+        return 'unstyled';
+    }
+  };
+
+  // const blockRenderFn = (contentBlock: any) => {
+  //   const type = contentBlock.getType();
+  //   if (type === 'atomic') {
+  //     const entity = contentBlock.getEntityAt(0);
+  //     if (!entity) return null;
+  //     const entityData = editorState.getCurrentContent().getEntity(entity);
+  //     const entityType = entityData.getType();
+  //     if (entityType === 'embedding') {
+  //       return {
+  //         component: EmbeddingBlock,
+  //         editable: false,
+  //       };
+  //     }
+  //   }
+
+  //   return null;
+  // };
+
+  useEffect(() => {
+    const options = {
+      blockStyleFn: (block: any) => {
+        if (
+          block.getType() === 'left' ||
+          block.getType() === 'center' ||
+          block.getType() === 'right'
+        ) {
+          return {
+            style: {
+              'text-align': block.getType(),
+            },
+          };
+        }
+      },
+    };
+
+    console.log(stateToHTML(editorState.getCurrentContent(), options));
+    console.log('메세지 : ', editorState.getCurrentContent().getPlainText());
+    console.log('내용 오리진 : ', editorState.getCurrentContent());
+  }, [editorState]);
+
+  const onUpload = (e: any) => {
+    const file = e.target.files[0];
+    tryUploadImage(file);
+  };
+
+  const onUploadImageButtonClick = useCallback(() => {
+    if (inputRef.current) {
+      inputRef.current.click();
+    }
+  }, []);
+
+  const insertImage = (url: string) => {
+    const contentState = editorState.getCurrentContent();
+    const contentStateWithEntity = contentState.createEntity(
+      'image',
+      'IMMUTABLE',
+      { src: url },
+    );
+    const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+    const newEditorState = EditorState.set(editorState, {
+      currentContent: contentStateWithEntity,
+    });
+    setEditorState(
+      AtomicBlockUtils.insertAtomicBlock(newEditorState, entityKey, ' '),
+    );
+  };
+
+  // const insertEmbedding = (item: embeddingType) => {
+  //   const contentState = editorState.getCurrentContent();
+  //   const contentStateWithEntity = contentState.createEntity(
+  //     'embedding',
+  //     'IMMUTABLE',
+  //     {
+  //       title: item.title,
+  //       content: item.content,
+  //       thumbnail: item.thumbnail,
+  //       category: item.category,
+  //       url: item.url,
+  //     },
+  //   );
+  //   const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+  //   const newEditorState = EditorState.set(editorState, {
+  //     currentContent: contentStateWithEntity,
+  //   });
+  //   setEditorState(
+  //     AtomicBlockUtils.insertAtomicBlock(newEditorState, entityKey, ' '),
+  //   );
+  // };
+
+  const onClickEmbeddingButton = () => {
+    setIsEmbeddingOpen(true);
+  };
+
+  const onClickEmbeddingClose = () => {
+    setIsEmbeddingOpen(false);
+  };
+
+  const toggleBlockType = (blockType: string) => {
+    setEditorState(RichUtils.toggleBlockType(editorState, blockType));
+  };
+
+  const toggleInlineStyle = (inlineStyle: string) => {
+    setEditorState(RichUtils.toggleInlineStyle(editorState, inlineStyle));
+  };
+
+  // const draftToHTML = () => {
+  //   const rawContentState = convertToRaw(editorState.getCurrentContent());
+  //   const markup = draftToHtml(rawContentState, {}, false, (entity) => {
+  //     if (entity.type === 'embedding') {
+  //       const data = entity.data;
+  //       return `<a href="${data.url}" target="_blank" rel="noopener noreferrer">
+  //   <div class="embedding-block">
+  //     <img src="${data.thumbnail}" alt="link" class="embedding-thumbnail" />
+  //     <div class="embedding-content">
+  //       <div class="embedding-category">${data.category}</div>
+  //       <div class="embedding-title">${data.title}</div>
+  //       <div class="embedding-description">${data.content}</div>
+  //       <div class="embedding-url">${data.url}</div>
+  //     </div>
+  //   </div>
+  // </a>`;
+  //     }
+  //   });
+  //   return markup;
+  // };
+
+  // const handlePastedFiled = (files: Blob[]): DraftHandleValue => {
+  //   postImageApi(files[0] as File)
+  //     .then((res) => {
+  //       console.log(res);
+  //       insertImage(res.data.data);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+
+  //   return 'handled';
+  // };
+
   // const insertImage = (url: string) => {
   //   const contentState = editorState.getCurrentContent();
   //   const contentStateWithEntity = contentState.createEntity(
@@ -321,24 +362,6 @@ export const useWrite = () => {
   //     AtomicBlockUtils.insertAtomicBlock(newEditorState, entityKey, ' '),
   //   );
   // };
-
-  const blockRenderFn = (contentBlock: any) => {
-    const type = contentBlock.getType();
-    if (type === 'atomic') {
-      const entity = contentBlock.getEntityAt(0);
-      if (!entity) return null;
-      const entityData = editorState.getCurrentContent().getEntity(entity);
-      const entityType = entityData.getType();
-      if (entityType === 'embedding') {
-        return {
-          component: EmbeddingBlock,
-          editable: false,
-        };
-      }
-    }
-
-    return null;
-  };
 
   // const blockRenderMap = DefaultDraftBlockRenderMap.merge(
   //   Immutable.Map({
@@ -363,7 +386,7 @@ export const useWrite = () => {
     toggleBlockType,
     toggleInlineStyle,
     getBlockStyle,
-    handlePastedFiled,
+    // handlePastedFiled,
     onUpload,
     onUploadImageButtonClick,
     inputRef,
@@ -377,6 +400,6 @@ export const useWrite = () => {
     onClickEmbeddingClose,
     isEmbeddingOpen,
     onAddEmbedding,
-    blockRenderFn,
+    // blockRenderFn,
   };
 };
