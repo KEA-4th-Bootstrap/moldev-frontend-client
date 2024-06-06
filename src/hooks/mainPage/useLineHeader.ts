@@ -35,6 +35,7 @@ const useLineHeader = () => {
             userInfo: {
               ...data.data.data.userInfo.userList[i],
             },
+            viewCount: data.data.data.postInfo.postList[i].redisViewCount,
           });
         }
         setPostList(dataList);
