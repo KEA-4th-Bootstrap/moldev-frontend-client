@@ -11,7 +11,7 @@ const MainPage = () => {
   }, [isLoggedIn]);
   return (
     <div className="flex w-full min-h-screen items-center justify-end">
-      <SidebarContainer />
+      <SidebarContainer defaultSelected="onboarding" />
       <MainContainer />
       <Outlet />
     </div>
