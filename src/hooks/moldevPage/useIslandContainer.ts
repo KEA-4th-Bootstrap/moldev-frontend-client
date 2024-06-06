@@ -7,9 +7,11 @@ import useShadowRef from './useShadowRef';
 import useRouteNavigate from '../common/useRouteNavigate';
 import { getMoldevId } from '../../api/manageLocalStorage';
 import { OrbitControls } from 'three-stdlib';
+import { useNavigate } from 'react-router-dom';
 
 const useIsland = (showTravel: boolean) => {
-  const { moldevId } = useParams();
+  const navigate = useNavigate();
+  const { moldevId } = useParams() as { moldevId: string };
   const myMoldevId = getMoldevId();
   const [awardsHover, setAwardsHover] = useState(false);
   const [projectHover, setProjectHover] = useState(false);
@@ -117,7 +119,11 @@ const useIsland = (showTravel: boolean) => {
 
   const { onClickIcon: onClickHome } = useRouteNavigate(`/`);
 
-  const { onClickIcon: onClickMyPage } = useRouteNavigate(`/${myMoldevId}`);
+  const onClickMyPage = () => {
+    navigate(`/${myMoldevId}`, {
+      state: { nickname: '몰데브 주인', islandName: '특별한' },
+    });
+  };
 
   return {
     moldevId,

@@ -196,3 +196,8 @@ export type embeddingType = {
   category: categoryType;
   url: string;
 };
+
+export type WebRTCUser = {
+  id: string;
+  stream: any;
+};

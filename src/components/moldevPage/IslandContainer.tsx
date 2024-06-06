@@ -1,7 +1,6 @@
 import { OrbitControls } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import { DoubleSide, Object3D } from 'three';
-import { ReactComponent as Visit } from '../../assets/icons/icon_visit.svg';
 import { ReactComponent as Project } from '../../assets/icons/icon_project.svg';
 import { ReactComponent as Trouble } from '../../assets/icons/icon_trouble.svg';
 import { ReactComponent as Activity } from '../../assets/icons/icon_activity.svg';
@@ -14,6 +13,7 @@ import { GunModel } from '../models/GunModel';
 import Toggle from './Toggle';
 import useIsland from '../../hooks/moldevPage/useIslandContainer';
 import useAuthStore from '../../store/useAuthStore';
+import MeetingContainer from './MeetingContainer';
 
 const IslandContainer = ({ showTravel }: { showTravel: boolean }) => {
   const {
@@ -143,16 +143,6 @@ const IslandContainer = ({ showTravel }: { showTravel: boolean }) => {
           <meshStandardMaterial map={colorMap} side={DoubleSide} />
         </mesh>
       </Canvas>
-      <div className="absolute top-[30px] left-[24px]">
-        <Toggle
-          type="default"
-          icon={<Visit />}
-          text="28명 방문"
-          isItemHover={false}
-          onClick={() => {}}
-          canClick={false}
-        />
-      </div>
       <div className="absolute bottom-[30px] left-[24px] flex flex-col items-start justify-center gap-y-16">
         <Toggle
           type="default"
@@ -221,6 +211,7 @@ const IslandContainer = ({ showTravel }: { showTravel: boolean }) => {
           />
         )}
       </div>
+      <MeetingContainer moldevId={moldevId} />
     </div>
   );
 };
