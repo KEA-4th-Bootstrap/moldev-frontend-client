@@ -52,11 +52,13 @@ export const categoryToKorean = {
 export type postListItemType = {
   postInfo: postListItemPostType;
   userInfo: postListItemUserType;
+  viewCount?: number;
 };
 export type postListItemPostType = {
   category?: categoryType;
   content: string;
   id: number;
+  createDate?: string;
   lastModifiedDate: string;
   moldevId: string;
   thumbnail: string;
