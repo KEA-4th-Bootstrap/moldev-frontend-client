@@ -29,7 +29,7 @@ const PostListItemContainer = ({ item }: { item: postListItemType }) => {
             {item.postInfo.content}
           </div>
         </div>
-        <div className="text-12 font-normal text-gray-300">{`${date} ∙ ${item.postInfo.viewCount}`}</div>
+        <div className="text-12 font-normal text-gray-300">{`${date} ∙ ${item.viewCount}`}</div>
       </div>
       <div className="shrink-0 w-full flex items-center justify-start px-13 py-10 gap-x-8 border-t-[0.5px] border-gray-100">
         <img
