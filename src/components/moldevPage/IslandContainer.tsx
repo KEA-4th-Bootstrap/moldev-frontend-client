@@ -7,15 +7,18 @@ import { ReactComponent as Trouble } from '../../assets/icons/icon_trouble.svg';
 import { ReactComponent as Activity } from '../../assets/icons/icon_activity.svg';
 import { ReactComponent as Awards } from '../../assets/icons/icon_awards.svg';
 import { ReactComponent as Write } from '../../assets/icons/icon_write_main.svg';
+import { ReactComponent as Home } from '../../assets/icons/icon_home_main.svg';
 import { IslandModel } from '../models/IslandModel';
 import { TrophyModel } from '../models/TrophyModel';
 import { GunModel } from '../models/GunModel';
 import Toggle from './Toggle';
 import useIsland from '../../hooks/moldevPage/useIslandContainer';
+import useAuthStore from '../../store/useAuthStore';
 
-const IslandContainer = () => {
+const IslandContainer = ({ showTravel }: { showTravel: boolean }) => {
   const {
-    // moldevId,
+    moldevId,
+    myMoldevId,
     lightIntensity,
     positions,
     colors,
@@ -36,7 +39,11 @@ const IslandContainer = () => {
     onClickTrouble,
     onClickActivity,
     onClickWrite,
-  } = useIsland();
+    onClickHome,
+    onClickMyPage,
+    orbitRef,
+  } = useIsland(showTravel);
+  const { isLoggedIn } = useAuthStore();
 
   return (
     <div className="w-2/3 min-h-screen h-screen flex items-center justify-center relative">
@@ -44,7 +51,7 @@ const IslandContainer = () => {
         shadows
         camera={{ fov: 75, near: 0.1, far: 500, position: [5, 15, 30] }}
       >
-        <OrbitControls minDistance={15} maxDistance={45} />
+        <OrbitControls minDistance={15} maxDistance={45} ref={orbitRef} />
         <ambientLight position={[0, 0, 0]} intensity={2} color="#FFFFFF" />
         <directionalLight
           position={[positions[0][0], positions[0][1], positions[0][2]]}
@@ -180,15 +187,39 @@ const IslandContainer = () => {
           canClick={true}
         />
       </div>
-      <div className="absolute bottom-[30px] right-[24px]">
-        <Toggle
-          type="main"
-          icon={<Write />}
-          text="글쓰기"
-          isItemHover={false}
-          onClick={onClickWrite}
-          canClick={true}
-        />
+      <div className="absolute bottom-[30px] right-[24px] flex flex-col items-end justify-center gap-y-16">
+        {isLoggedIn ? (
+          <>
+            {moldevId === myMoldevId ? (
+              <Toggle
+                type="main"
+                icon={<Write />}
+                text="글쓰기"
+                isItemHover={true}
+                onClick={onClickWrite}
+                canClick={true}
+              />
+            ) : (
+              <Toggle
+                type="main"
+                icon={<Home />}
+                text="내 섬으로 돌아가기"
+                isItemHover={true}
+                onClick={onClickMyPage}
+                canClick={true}
+              />
+            )}
+          </>
+        ) : (
+          <Toggle
+            type="main"
+            icon={<Home />}
+            text="메인페이지"
+            isItemHover={true}
+            onClick={onClickHome}
+            canClick={true}
+          />
+        )}
       </div>
     </div>
   );
