@@ -1,28 +1,9 @@
-import dayjs from 'dayjs';
 import { trendIslandType } from '../../data/type';
-import useRouteNavigate from '../../hooks/common/useRouteNavigate';
+import { useIslandListItemContainer } from '../../hooks/mainPage/useIslandListItemContainer';
 
 const IslandListItemContainer = ({ item }: { item: trendIslandType }) => {
-  const userInfo =
-    item.userInfo.trendingMembersResponseDtos[0].memberProfileResponseDto;
-  const todayVisit =
-    item.userInfo.trendingMembersResponseDtos[0].redisViewCount;
-  const { onClick } = useRouteNavigate(`/${userInfo.moldevId}`);
-  const changeDateFormat = (date: string) => {
-    const parsedServerDate = dayjs(date);
-    const currentDate = dayjs();
-
-    // 날짜 차이 계산
-    const differenceInDays = currentDate.diff(parsedServerDate, 'day');
-
-    return differenceInDays < 1
-      ? '오늘'
-      : differenceInDays < 2
-        ? '어제'
-        : differenceInDays < 7
-          ? `${differenceInDays}일 전`
-          : parsedServerDate.format('YYYY.MM.DD');
-  };
+  const { userInfo, todayVisit, changeDateFormat, onClick } =
+    useIslandListItemContainer(item);
   return (
     <div
       className="grow flex flex-col items-center justify-start rounded-card gap-y-10 py-20 bg-white hover:bg-main/10 cursor-pointer"
@@ -50,10 +31,6 @@ const IslandListItemContainer = ({ item }: { item: trendIslandType }) => {
           <div>오늘의 방문자</div>
           <div>{todayVisit}명</div>
         </div>
-        {/* <div className="w-full flex justify-between items-center text-12 font-medium text-gray-400">
-          <div>최근 업데이트</div>
-          <div>{item.updated}</div>
-        </div> */}
       </div>
       <div className="w-full h-[0.5px] bg-gray-50" />
       <div className="w-full px-16 flex flex-col items-center justify-center gap-y-3">
