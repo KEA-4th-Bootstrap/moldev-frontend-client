@@ -79,6 +79,7 @@ export const patchPostApi = async (
   content: string,
   profileContent: string,
   thumbnail: string,
+  images: string[],
   category: string,
 ) => {
   return authAxios.patch(`/api/post/${postId}`, {
@@ -87,6 +88,7 @@ export const patchPostApi = async (
     content: content,
     profileContent: profileContent,
     thumbnail: thumbnail,
+    images: images,
     category: category,
   });
 };
