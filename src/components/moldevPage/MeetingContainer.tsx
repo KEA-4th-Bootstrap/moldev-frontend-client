@@ -8,10 +8,15 @@ import { ReactComponent as Visit } from '../../assets/icons/icon_visit.svg';
 import Toggle from './Toggle';
 import VideoContainer from './VideoContainer';
 import { useMeeting } from '../../hooks/moldevPage/useMeeting';
+import { useEffect } from 'react';
 
 const MeetingContainer = ({ moldevId }: { moldevId: string }) => {
   const {
+    myMoldevId,
+    isLoggedIn,
+    onClickLogin,
     localStreamRef,
+    localStream,
     users,
     isOnGroup,
     isOnVideo,
@@ -21,6 +26,11 @@ const MeetingContainer = ({ moldevId }: { moldevId: string }) => {
     onClickMic,
   } = useMeeting(moldevId);
 
+  useEffect(() => {
+    console.log('MeetingContainer Rendered');
+    console.log('localStremRef : ', localStreamRef.current);
+  }, [localStreamRef]);
+
   return (
     <>
       {!isOnGroup && (
@@ -29,96 +39,129 @@ const MeetingContainer = ({ moldevId }: { moldevId: string }) => {
             type="default"
             icon={<Visit />}
             text="28명 방문"
-            isItemHover={false}
+            isItemHover={true}
             onClick={() => {}}
             canClick={false}
           />
         </div>
       )}
-      <div
-        className={`absolute top-[30px] right-[24px] left-[24px] flex items-start justify-end gap-x-30`}
-      >
-        {isOnGroup && (
-          <div className="grow flex items-center justify-start bg-gray-50 gap-x-15">
-            <div className="grow flex items-center justify-end gap-x-16 bg-gray-600">
-              {users.map((user) => (
-                <VideoContainer
-                  key={user.id}
-                  stream={user.stream}
-                  name={user.name}
-                  isMicOn={false}
-                />
-              ))}
-            </div>
-            <div className="flex itemcen justify-center">
-              <VideoContainer
-                stream={localStreamRef.current || null}
-                name={`${moldevId} (나)`}
-                isMicOn={isOnMic}
-              />
-            </div>
-          </div>
-        )}
+      {!isLoggedIn && (
+        <div className="absolute top-[30px] right-[24px]">
+          <Toggle
+            type="main"
+            icon={<GroupOn />}
+            text="로그인 후 구경 참여"
+            isItemHover={true}
+            onClick={onClickLogin}
+            canClick={true}
+          />
+        </div>
+      )}
+      {isLoggedIn && (
         <div
-          className={`flex flex-col items-end justify-start gap-y-16 ${isOnGroup ? 'max-h-[200px]' : 'max-h-[50px]'} transition-all duration-300 ease-in-out overflow-hidden`}
+          className={`absolute top-[30px] right-[24px] left-[24px] flex items-start justify-end gap-x-30`}
         >
-          {isOnGroup ? (
-            <>
-              <Toggle
-                type="default"
-                icon={<GroupOff />}
-                text="구경 그만하기"
-                isItemHover={true}
-                onClick={onClickGroup}
-                canClick={true}
-              />
-              {isOnVideo ? (
+          {isOnGroup && (
+            <div className="grow flex items-center justify-start bg-gray-50 gap-x-15">
+              <div className="grow flex items-center justify-end gap-x-16 bg-gray-600">
+                {users.map((user) => (
+                  <VideoContainer
+                    key={user.id}
+                    stream={user.stream}
+                    name={user.name}
+                    isMicOn={false}
+                  />
+                ))}
+              </div>
+              <div className="flex items-center justify-center">
+                {
+                  // 로컬 스트림이 있을 때만 렌더링
+                  localStream && (
+                    <VideoContainer
+                      stream={localStream}
+                      name={`${myMoldevId} (나)`}
+                      isMicOn={isOnMic}
+                    />
+                  )
+                }
+              </div>
+            </div>
+          )}
+          <div
+            className={`flex flex-col items-end justify-start gap-y-16 ${isOnGroup ? 'max-h-[200px]' : 'max-h-[50px]'} transition-all duration-300 ease-in-out overflow-hidden`}
+          >
+            {isOnGroup ? (
+              <>
                 <Toggle
+                  type="default"
+                  icon={<GroupOff />}
+                  text="구경 그만하기"
+                  isItemHover={true}
+                  onClick={onClickGroup}
+                  canClick={true}
+                />
+                {/* <Toggle
                   type="main"
                   icon={<VideoOn />}
                   isItemHover={true}
-                  onClick={onClickVideo}
+                  onClick={() => {}}
                   canClick={true}
                 />
-              ) : (
-                <Toggle
-                  type="default"
-                  icon={<VideoOff />}
-                  isItemHover={true}
-                  onClick={onClickVideo}
-                  canClick={true}
-                />
-              )}
-              {isOnMic ? (
                 <Toggle
                   type="main"
                   icon={<MicOn />}
                   isItemHover={true}
-                  onClick={onClickMic}
+                  onClick={() => {}}
                   canClick={true}
-                />
-              ) : (
-                <Toggle
-                  type="default"
-                  icon={<MicOff />}
-                  isItemHover={true}
-                  onClick={onClickMic}
-                  canClick={true}
-                />
-              )}
-            </>
-          ) : (
-            <Toggle
-              type="main"
-              icon={<GroupOn />}
-              text="구경 참여"
-              isItemHover={true}
-              onClick={onClickGroup}
-              canClick={true}
-            />
-          )}
+                /> */}
+                {isOnVideo ? (
+                  <Toggle
+                    type="main"
+                    icon={<VideoOn />}
+                    isItemHover={true}
+                    onClick={onClickVideo}
+                    canClick={true}
+                  />
+                ) : (
+                  <Toggle
+                    type="default"
+                    icon={<VideoOff />}
+                    isItemHover={true}
+                    onClick={onClickVideo}
+                    canClick={true}
+                  />
+                )}
+                {isOnMic ? (
+                  <Toggle
+                    type="main"
+                    icon={<MicOn />}
+                    isItemHover={true}
+                    onClick={onClickMic}
+                    canClick={true}
+                  />
+                ) : (
+                  <Toggle
+                    type="default"
+                    icon={<MicOff />}
+                    isItemHover={true}
+                    onClick={onClickMic}
+                    canClick={true}
+                  />
+                )}
+              </>
+            ) : (
+              <Toggle
+                type="main"
+                icon={<GroupOn />}
+                text="구경 참여"
+                isItemHover={true}
+                onClick={onClickGroup}
+                canClick={true}
+              />
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </>
   );
 };

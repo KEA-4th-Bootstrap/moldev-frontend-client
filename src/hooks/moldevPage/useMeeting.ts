@@ -1,21 +1,34 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { pc_config } from '../../api/manageMeeting';
 import io from 'socket.io-client';
+import useAuthStore from '../../store/useAuthStore';
+import { useNavigate } from 'react-router-dom';
+import { getMoldevId } from '../../api/manageLocalStorage';
 
 export const useMeeting = (moldevId: string) => {
   useEffect(() => {
     console.log('moldevId:', moldevId);
   }, [moldevId]);
 
+  const myMoldevId = getMoldevId();
+  const { isLoggedIn } = useAuthStore();
+  const navigate = useNavigate();
   const [isOnGroup, setIsOnGroup] = useState(false);
-  const [isOnVideo, setIsOnVideo] = useState(false);
-  const [isOnMic, setIsOnMic] = useState(false);
+  // const [isOnVideo, setIsOnVideo] = useState(false);
+  const [isOnVideo, setIsOnVideo] = useState(true);
+  // const [isOnMic, setIsOnMic] = useState(false);
+  const [isOnMic, setIsOnMic] = useState(true);
 
   const socketRef = useRef<SocketIOClient.Socket>();
   const localStreamRef = useRef<MediaStream>();
+  const [localStream, setLocalStream] = useState<MediaStream | null>(null); // 추가된 상태
   const sendPCRef = useRef<RTCPeerConnection>();
   const receivePCsRef = useRef<{ [socketId: string]: RTCPeerConnection }>({});
   const [users, setUsers] = useState<Array<any>>([]);
+
+  const onClickLogin = () => {
+    navigate('/');
+  };
 
   const closeReceivePC = useCallback((socketId: string) => {
     if (!receivePCsRef.current[socketId]) return;
@@ -129,14 +142,14 @@ export const useMeeting = (moldevId: string) => {
           offerToReceiveAudio: false,
           offerToReceiveVideo: false,
         })
-        .then(async (offer) => {
-          await sendPC
-            .setLocalDescription(new RTCSessionDescription(offer))
-            .then(() => {
+        .then(async (sdp) => {
+          sendPC
+            .setLocalDescription(new RTCSessionDescription(sdp))
+            .then(async () => {
               if (!socketRef.current) return;
 
-              socketRef.current.emit('senderOffer', {
-                offer,
+              await socketRef.current.emit('senderOffer', {
+                sdp,
                 senderSocketId: socketRef.current.id,
                 roomId: moldevId,
               });
@@ -168,10 +181,14 @@ export const useMeeting = (moldevId: string) => {
           width: 230,
           height: 160,
         },
+        // video: true,
         audio: true,
       });
 
+      console.log('Stream:', stream); // 스트림이 제대로 할당되었는지 확인
       localStreamRef.current = stream;
+      setLocalStream(stream); // 상태로 설정
+      console.log('Local Stream:', localStreamRef.current); // 스트림이 제대로 할당되었는지 확인
 
       if (!socketRef.current) return;
 
@@ -188,31 +205,34 @@ export const useMeeting = (moldevId: string) => {
     }
   }, [createSenderOffer, moldevId, isOnGroup]);
 
-  useEffect(() => {
-    if (!localStreamRef.current) return;
+  // useEffect(() => {
+  //   if (!localStreamRef.current) return;
+  //   if (!isLoggedIn) return;
 
-    localStreamRef.current.getVideoTracks().forEach((track) => {
-      track.enabled = isOnVideo;
-    });
+  //   localStreamRef.current.getVideoTracks().forEach((track) => {
+  //     track.enabled = isOnVideo;
+  //   });
 
-    localStreamRef.current.getAudioTracks().forEach((track) => {
-      track.enabled = isOnMic;
-    });
+  //   localStreamRef.current.getAudioTracks().forEach((track) => {
+  //     track.enabled = isOnMic;
+  //   });
 
-    console.log(
-      'isOnVideo: ',
-      localStreamRef.current.getVideoTracks()[0].enabled,
-    );
-    console.log(
-      'isOnMic: ',
-      localStreamRef.current.getAudioTracks()[0].enabled,
-    );
-  }, [localStreamRef, isOnVideo, isOnMic, isOnGroup]);
+  //   console.log(
+  //     'isOnVideo: ',
+  //     localStreamRef.current.getVideoTracks()[0].enabled,
+  //   );
+  //   console.log(
+  //     'isOnMic: ',
+  //     localStreamRef.current.getAudioTracks()[0].enabled,
+  //   );
+  // }, [localStreamRef, isOnVideo, isOnMic, isOnGroup, isLoggedIn]);
 
   useEffect(() => {
     setIsOnGroup(false);
-    setIsOnVideo(false);
-    setIsOnMic(false);
+    // setIsOnVideo(false);
+    // setIsOnVideo(true);
+    // setIsOnMic(false);
+    // setIsOnMic(true);
   }, [moldevId]);
 
   const onClickGroup = () => {
@@ -222,12 +242,14 @@ export const useMeeting = (moldevId: string) => {
 
   const onClickVideo = () => {
     console.log('isOnVideo prev:', isOnVideo);
-    setIsOnVideo(!isOnVideo);
+    // setIsOnVideo(!isOnVideo);
+    // setIsOnVideo(true);
   };
 
   const onClickMic = () => {
     console.log('isOnMic prev:', isOnMic);
-    setIsOnMic(!isOnMic);
+    // setIsOnMic(!isOnMic);
+    // setIsOnMic(true);
   };
 
   useEffect(() => {
@@ -354,7 +376,11 @@ export const useMeeting = (moldevId: string) => {
   ]);
 
   return {
+    myMoldevId,
+    isLoggedIn,
+    onClickLogin,
     localStreamRef,
+    localStream,
     users,
     isOnGroup,
     isOnVideo,
@@ -362,5 +388,7 @@ export const useMeeting = (moldevId: string) => {
     onClickGroup,
     onClickVideo,
     onClickMic,
+    setIsOnVideo,
+    setIsOnMic,
   };
 };
