@@ -100,12 +100,12 @@ code {
   text-align: left;
 }
 
-.editor a {
+/* .editor a {
   margin: 16px 0;
   width: 100%;
   color: #3182ce;
   cursor: pointer;
-}
+} */
 /* 
 .editor a > div {
   width: 100%;
@@ -142,8 +142,18 @@ code {
   border: 1px solid #e1e1e1;
   display: flex;
   align-items: center;
-  justify-content: start;
+  justify-content: flex-start;
   border-radius: 0.25rem;
+}
+
+.embedding-anchor {
+  width: 100%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  /* margin: 0; */
+  /* padding: 0; */
 }
 
 .embedding-thumbnail {
@@ -171,14 +181,6 @@ code {
 .embedding-title {
   font-size: 14px;
   font-weight: bold;
-}
-
-.embedding-description {
-  font-size: 12px;
-  width: 100%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .embedding-url {
