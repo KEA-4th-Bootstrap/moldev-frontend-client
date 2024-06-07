@@ -158,7 +158,6 @@ export const useEmbedding = (
 
         onEmbedding({
           title: data.data.data.data.title,
-          content: data.data.data.data.content,
           thumbnail: data.data.data.data.thumbnail,
           category: category || 'ACTIVITY',
           url: data.data.data.data.frontUrl,
