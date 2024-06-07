@@ -80,6 +80,7 @@ const WritePage = () => {
     // blockRenderFn,
     // blockRenderMap,
     onAddEmbedding,
+    blockRendererFn,
   } = useWrite();
   const { onClickIcon: goHome } = useRouteNavigate('/');
   return (
@@ -237,6 +238,7 @@ const WritePage = () => {
               // handlePastedFiles={handlePastedFiled}
               // handleKeyCommand={handleKeyCommand}
               blockStyleFn={getBlockStyle}
+              blockRendererFn={blockRendererFn}
               // blockRendererFn={blockRenderFn}
               // blockRenderMap={blockRenderMap}
               placeholder="내용을 입력하세요."

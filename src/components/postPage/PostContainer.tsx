@@ -34,6 +34,7 @@ const PostContainer = ({
     setEditorState,
     onMoveToEdit,
     tryDeletePost,
+    blockRendererFn,
   } = usePostContainer(moldevId, postId);
   const date = useDateFormat(post?.postInfo.lastModifiedDate);
 
@@ -109,6 +110,7 @@ const PostContainer = ({
                 editorState={editorState}
                 readOnly={true}
                 onChange={setEditorState}
+                blockRendererFn={blockRendererFn}
               />
             </div>
           </div>

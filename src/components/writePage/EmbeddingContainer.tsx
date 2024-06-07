@@ -235,7 +235,7 @@ const EmbeddingContainer = ({
         <div className="min-w-[200px] w-1/5 h-full overflow-y-scroll bg-white py-30 px-16">
           <div className="font-bold text-18">대표 사진</div>
           <div className="w-full h-px bg-gray-50 my-20" />
-          <div className="w-full flex gap-y-16">
+          <div className="w-full flex flex-col gap-y-16">
             {images.length < 1 ? (
               <div className="w-full text-center text-14 text-gray-600">
                 대표 사진 설정을 위해
