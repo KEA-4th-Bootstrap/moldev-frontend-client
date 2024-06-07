@@ -9,11 +9,13 @@ import { categoryToKorean } from '../data/type';
 import { ReactComponent as Pin } from '../assets/icons/icon_pin.svg';
 import { ReactComponent as CheckMain } from '../assets/icons/icon_check_main.svg';
 import { ReactComponent as DownArrow } from '../assets/icons/arrow_down_gray_200.svg';
+import { ReactComponent as EmbeddingBox } from '../assets/icons/icon_embedding_box.svg';
 import RoundButton from '../components/common/RoundButton';
 import { ReactComponent as Image } from '../assets/icons/icon_image.svg';
 import useRouteNavigate from '../hooks/common/useRouteNavigate';
 import { useEdit } from '../hooks/postPage/useEdit';
 import ErrorContainer from '../components/common/ErrorContainer';
+import EmbeddingPage from './EmbeddingPage';
 
 const linkifyPlugin = createLinkifyPlugin({
   component: (props) => (
@@ -63,7 +65,6 @@ const EditPage = () => {
     toggleBlockType,
     toggleInlineStyle,
     getBlockStyle,
-    handlePastedFiled,
     onUpload,
     onUploadImageButtonClick,
     inputRef,
@@ -75,6 +76,11 @@ const EditPage = () => {
     imagesIsLoading,
     imagesIsError,
     handleEditorChange,
+    onAddEmbedding,
+    onClickEmbeddingButton,
+    isEmbeddingOpen,
+    onClickEmbeddingClose,
+    blockRendererFn,
   } = useEdit();
   const { onClickIcon: goHome } = useRouteNavigate('/');
 
@@ -192,12 +198,20 @@ const EditPage = () => {
             editorState={editorState}
             onToggle={toggleInlineStyle}
           />
-          <Image
-            className="cursor-pointer"
-            width={24}
-            height={24}
-            onClick={onUploadImageButtonClick}
-          />
+          <div className="flex items-center justify-start gap-4 px-4">
+            <Image
+              className="cursor-pointer"
+              width={24}
+              height={24}
+              onClick={onUploadImageButtonClick}
+            />
+            <EmbeddingBox
+              className="cursor-pointer"
+              width={24}
+              height={24}
+              onClick={onClickEmbeddingButton}
+            />
+          </div>
           <input
             ref={inputRef}
             className="hidden"
@@ -222,9 +236,8 @@ const EditPage = () => {
               plugins={plugins}
               editorState={editorState}
               onChange={handleEditorChange}
-              handlePastedFiles={handlePastedFiled}
-              // handleKeyCommand={handleKeyCommand}
               blockStyleFn={getBlockStyle}
+              blockRendererFn={blockRendererFn}
               placeholder="내용을 입력하세요."
               ref={editorRef}
             />
@@ -269,6 +282,12 @@ const EditPage = () => {
             <div className="w-10 h-10 border-2 border-t-[4px] border-blue-500 rounded-full animate-spin"></div>
           </div>
         </div>
+      )}
+      {isEmbeddingOpen && (
+        <EmbeddingPage
+          onClose={onClickEmbeddingClose}
+          onEmbedding={onAddEmbedding}
+        />
       )}
     </div>
   );
