@@ -191,7 +191,7 @@ export type searchResultPostType = {
 
 export type embeddingType = {
   title: string;
-  content: string;
+  // content: string;
   thumbnail: string;
   category: categoryType;
   url: string;
