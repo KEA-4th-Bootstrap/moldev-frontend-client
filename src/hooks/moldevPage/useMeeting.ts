@@ -37,7 +37,7 @@ export const useMeeting = (moldevId: string) => {
   }, []);
 
   const createReceiverOffer = useCallback(
-    async (sendereSocketId: string) => {
+    async (senderSocketId: string) => {
       try {
         const receivePC = new RTCPeerConnection(pc_config);
 
@@ -46,16 +46,16 @@ export const useMeeting = (moldevId: string) => {
             offerToReceiveAudio: true,
             offerToReceiveVideo: true,
           })
-          .then(async (offer) => {
-            await receivePC
-              .setLocalDescription(new RTCSessionDescription(offer))
+          .then(async (sdp) => {
+            receivePC
+              .setLocalDescription(new RTCSessionDescription(sdp))
               .then(() => {
                 if (!socketRef.current) return;
 
                 socketRef.current.emit('receiverOffer', {
-                  offer,
+                  sdp,
                   receiverSocketId: socketRef.current.id,
-                  sendereSocketId: sendereSocketId,
+                  senderSocketId,
                   roomId: moldevId,
                 });
               });
@@ -134,7 +134,6 @@ export const useMeeting = (moldevId: string) => {
         });
       } else {
         console.error('localStreamRef.current is null');
-        return;
       }
 
       await sendPC
@@ -262,7 +261,7 @@ export const useMeeting = (moldevId: string) => {
         reconnection: true,
         reconnectionDelay: 1000,
         reconnectionAttempts: 5,
-        forceNew: true,
+        forceNew: false,
       },
     );
 
