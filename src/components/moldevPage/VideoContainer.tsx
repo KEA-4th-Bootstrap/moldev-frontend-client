@@ -15,6 +15,7 @@ const VideoContainer = ({
   useEffect(() => {
     if (ref.current) {
       ref.current.srcObject = stream;
+      console.log('Assigned Stream to Video:', stream); // 스트림 할당 확인
     }
   }, [stream]);
 
@@ -23,6 +24,7 @@ const VideoContainer = ({
       <video
         className="w-full h-full object-cover bg-dark-300"
         ref={ref}
+        style={{ transform: 'scaleX(-1)' }}
         autoPlay
       />
       <div className="absolute bottom-2 left-2 max-w-[150px] px-4 py-2 bg-black bg-opacity-50 rounded-block flex items-center justify-center text-white text-12">
