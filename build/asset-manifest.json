@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.a0cd5e1c.css",
-    "main.js": "/static/js/main.5f0514eb.js",
+    "main.js": "/static/js/main.9e7704b2.js",
     "static/media/Pretendard-Light.otf": "/static/media/Pretendard-Light.0f2cd73d57b11350114b.otf",
     "static/media/Pretendard-Regular.otf": "/static/media/Pretendard-Regular.1a9a79319a362473678b.otf",
     "static/media/Pretendard-Medium.otf": "/static/media/Pretendard-Medium.d3ae9b68d64eab9d0092.otf",
@@ -73,6 +73,6 @@
   },
   "entrypoints": [
     "static/css/main.a0cd5e1c.css",
-    "static/js/main.5f0514eb.js"
+    "static/js/main.9e7704b2.js"
   ]
 }

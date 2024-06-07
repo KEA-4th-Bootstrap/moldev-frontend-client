@@ -360,8 +360,9 @@ export const useMeeting = (moldevId: string) => {
       if (sendPCRef.current) {
         sendPCRef.current.close();
       }
-      users.forEach((user) => {
-        closeReceivePC(user.id);
+      Object.keys(receivePCsRef.current).forEach((socketId) => {
+        receivePCsRef.current[socketId].close();
+        delete receivePCsRef.current[socketId];
       });
     };
   }, [
@@ -370,9 +371,19 @@ export const useMeeting = (moldevId: string) => {
     createSenderOffer,
     getLocalStream,
     moldevId,
-    users,
-    isOnGroup,
+    isOnGroup, // users를 제거
   ]);
+
+  // users 상태 업데이트를 별도의 useEffect 훅으로 분리
+  useEffect(() => {
+    if (socketRef.current) {
+      socketRef.current.on('userExit', (data: { id: string }) => {
+        console.log('userExit:', data);
+        closeReceivePC(data.id);
+        setUsers((prev) => prev.filter((user) => user.id !== data.id));
+      });
+    }
+  }, [closeReceivePC]);
 
   return {
     myMoldevId,
