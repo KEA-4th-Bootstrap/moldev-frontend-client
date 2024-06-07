@@ -13,6 +13,7 @@ import { useEffect } from 'react';
 const MeetingContainer = ({ moldevId }: { moldevId: string }) => {
   const {
     myMoldevId,
+    mySocketId,
     isLoggedIn,
     onClickLogin,
     localStreamRef,
@@ -62,18 +63,21 @@ const MeetingContainer = ({ moldevId }: { moldevId: string }) => {
           className={`absolute top-[30px] right-[24px] left-[24px] flex items-start justify-end gap-x-30`}
         >
           {isOnGroup && (
-            <div className="grow flex items-center justify-start bg-gray-50 gap-x-15">
-              <div className="grow flex items-center justify-end gap-x-16 bg-gray-600">
-                {users.map((user) => (
-                  <VideoContainer
-                    key={user.id}
-                    stream={user.stream}
-                    name={user.name}
-                    isMicOn={false}
-                  />
-                ))}
+            <div className="grow h-[160px] flex items-center justify-between gap-x-15 overflow-hidden">
+              <div className="h-full flex items-center justify-start gap-x-16 overflow-x-scroll scrollbar-hide">
+                {users.map(
+                  (user) =>
+                    user.id !== mySocketId && (
+                      <VideoContainer
+                        key={user.id}
+                        stream={user.stream}
+                        name={user.name}
+                        isMicOn={false}
+                      />
+                    ),
+                )}
               </div>
-              <div className="flex items-center justify-center">
+              <div className="shrink-0 flex items-center justify-center">
                 {
                   // 로컬 스트림이 있을 때만 렌더링
                   localStream && (
@@ -88,7 +92,7 @@ const MeetingContainer = ({ moldevId }: { moldevId: string }) => {
             </div>
           )}
           <div
-            className={`flex flex-col items-end justify-start gap-y-16 ${isOnGroup ? 'max-h-[200px]' : 'max-h-[50px]'} transition-all duration-300 ease-in-out overflow-hidden`}
+            className={`shrink-0 flex flex-col items-end justify-start gap-y-16 ${isOnGroup ? 'max-h-[200px]' : 'max-h-[50px]'} transition-all duration-300 ease-in-out overflow-hidden`}
           >
             {isOnGroup ? (
               <>

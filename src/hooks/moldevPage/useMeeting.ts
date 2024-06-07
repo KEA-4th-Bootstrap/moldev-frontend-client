@@ -11,6 +11,7 @@ export const useMeeting = (moldevId: string) => {
   }, [moldevId]);
 
   const myMoldevId = getMoldevId();
+  const [mySocketId, setMySocketId] = useState<string>('');
   const { isLoggedIn } = useAuthStore();
   const navigate = useNavigate();
   const [isOnGroup, setIsOnGroup] = useState(false);
@@ -193,6 +194,8 @@ export const useMeeting = (moldevId: string) => {
 
       if (isOnGroup) {
         await createSenderOffer();
+
+        setMySocketId(socketRef.current.id);
 
         socketRef.current.emit('joinRoom', {
           id: socketRef.current.id,
@@ -387,6 +390,7 @@ export const useMeeting = (moldevId: string) => {
 
   return {
     myMoldevId,
+    mySocketId,
     isLoggedIn,
     onClickLogin,
     localStreamRef,

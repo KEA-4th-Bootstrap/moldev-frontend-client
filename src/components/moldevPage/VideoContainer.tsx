@@ -20,7 +20,7 @@ const VideoContainer = ({
   }, [stream]);
 
   return (
-    <div className="w-[230px] h-[160px] flex items-center justify-center rounded-block overflow-hidden relative">
+    <div className="shrink-0 w-[230px] h-[160px] flex items-center justify-center rounded-block overflow-hidden relative">
       <video
         className="w-full h-full object-cover bg-dark-300"
         ref={ref}
