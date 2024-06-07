@@ -35,16 +35,30 @@ const LineHeaderContainer = () => {
       </div>
       <div className="w-full grid grid-cols-3 gap-18 px-16">
         {selected === 'post' ? (
-          postListIsLoading ? (
-            <>
-              <PostListItemSkeleton />
-              <PostListItemSkeleton />
-              <PostListItemSkeleton />
-            </>
-          ) : postListIsError ? (
+          !postList ? (
+            postListIsLoading ? (
+              <>
+                <PostListItemSkeleton />
+                <PostListItemSkeleton />
+                <PostListItemSkeleton />
+              </>
+            ) : postListIsError ? (
+              <>
+                <div />
+                <ErrorContainer />
+                <div />
+              </>
+            ) : (
+              <>
+                <div />
+                <div>알 수 없는 에러가 발생하였습니다.</div>
+                <div />
+              </>
+            )
+          ) : postList.length < 1 ? (
             <>
               <div />
-              <ErrorContainer />
+              <EmptyContainer />
               <div />
             </>
           ) : (
