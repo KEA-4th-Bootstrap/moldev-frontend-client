@@ -1,14 +1,22 @@
 import React from 'react';
 import { commentType, replyType } from '../../data/type';
 import { useCommentItemWrapper } from '../../hooks/postPage/useCommentItemWrapper';
+import ReportContainer from './ReportContainer';
 
 const CommentItemWrapper = ({
   comment,
 }: {
   comment: commentType | replyType;
 }) => {
-  const { moldevId, info, userInfo, date, deleteComment } =
-    useCommentItemWrapper(comment);
+  const {
+    moldevId,
+    info,
+    userInfo,
+    date,
+    deleteComment,
+    isReportOpen,
+    setIsReportOpen,
+  } = useCommentItemWrapper(comment);
   return (
     <div className="w-full flex flex-col items-center justify-center gap-y-20">
       <div className="w-full flex items-center justify-start gap-x-15">
@@ -36,12 +44,24 @@ const CommentItemWrapper = ({
                 삭제
               </div>
             ) : (
-              <div className="hover:underline underline-offset-2 cursor-pointer">
+              <div
+                className="hover:underline underline-offset-2 cursor-pointer"
+                onClick={() => setIsReportOpen(true)}
+              >
                 신고
               </div>
             ))}
         </div>
       </div>
+      {isReportOpen && moldevId && (
+        <ReportContainer
+          type={'REPLY'}
+          contentId={info.id}
+          reporterId={moldevId}
+          reporteeId={userInfo.moldevId}
+          onClose={() => setIsReportOpen(false)}
+        />
+      )}
     </div>
   );
 };

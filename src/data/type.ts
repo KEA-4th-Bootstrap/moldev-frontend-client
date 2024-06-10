@@ -201,3 +201,40 @@ export type WebRTCUser = {
   id: string;
   stream: any;
 };
+
+export type reportType = 'POST' | 'REPLY';
+
+export type reportItemType = {
+  reportRequestDto: {
+    reporterId: string;
+    reporteeId: string;
+    reason: reportReasonType;
+  };
+  contentId: string | number;
+};
+
+export type reportReasonType =
+  | 'PROFANITY'
+  | 'HATE_SPEECH'
+  | 'SEXUAL_CONTENT'
+  | 'VIOLENCE'
+  | 'SPAM'
+  | 'HARMFUL_CONTENT';
+
+export const reportReasonFromKorean = {
+  욕설: 'PROFANITY',
+  '혐오 발언': 'HATE_SPEECH',
+  '성적인 내용': 'SEXUAL_CONTENT',
+  폭력: 'VIOLENCE',
+  스팸: 'SPAM',
+  '유해한 내용': 'HARMFUL_CONTENT',
+};
+
+export const reportReasonToKorean = {
+  PROFANITY: '욕설',
+  HATE_SPEECH: '혐오 발언',
+  SEXUAL_CONTENT: '성적인 내용',
+  VIOLENCE: '폭력',
+  SPAM: '스팸',
+  HARMFUL_CONTENT: '유해한 내용',
+};

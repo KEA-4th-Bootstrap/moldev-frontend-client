@@ -16,6 +16,7 @@ import htmlToDraft from 'html-to-draftjs';
 export const usePostContainer = (moldevId: string, postId: number) => {
   const { post, postIsLoading, postIsError } = usePost(moldevId, postId);
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  const [isReportOpen, setIsReportOpen] = useState(false);
   const navigate = useNavigate();
 
   const blockRendererFn = (contentBlock: ContentBlock) => {
@@ -126,5 +127,7 @@ export const usePostContainer = (moldevId: string, postId: number) => {
     onMoveToEdit,
     tryDeletePost,
     blockRendererFn,
+    isReportOpen,
+    setIsReportOpen,
   };
 };

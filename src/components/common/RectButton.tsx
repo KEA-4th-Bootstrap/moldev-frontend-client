@@ -66,7 +66,7 @@ const RectButton = ({
             : () => {}
       }
     >
-      {text}
+      <div className="shrink-0 overflow-visible">{text}</div>
     </button>
   );
 };
