@@ -3,8 +3,10 @@ import { getMoldevId } from '../../api/manageLocalStorage';
 import { commentType, replyType } from '../../data/type';
 import { useDateFormat } from '../common/useDateFormat';
 import { deleteCommentApi } from '../../api/postApi';
+import { useState } from 'react';
 
 export const useCommentItemWrapper = (comment: commentType | replyType) => {
+  const [isReportOpen, setIsReportOpen] = useState(false);
   const moldevId = getMoldevId();
   const info =
     'commentInfo' in comment ? comment.commentInfo : comment.replyInfo;
@@ -24,5 +26,13 @@ export const useCommentItemWrapper = (comment: commentType | replyType) => {
     },
   );
 
-  return { moldevId, info, userInfo, date, deleteComment };
+  return {
+    moldevId,
+    info,
+    userInfo,
+    date,
+    deleteComment,
+    isReportOpen,
+    setIsReportOpen,
+  };
 };
