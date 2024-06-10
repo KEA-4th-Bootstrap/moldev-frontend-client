@@ -179,6 +179,8 @@ module.exports = {
         'gray-200': '#D1D1D1',
         'gray-100': '#E0E0E0',
         'gray-50': '#F2F2F2',
+        'admin-tag-blue': '#00AAFE',
+        'admin-tag-green': '#4FC938',
         negative: '#FF5151',
         positive: '#2AE45E',
         warning: '#FFCE4F',
