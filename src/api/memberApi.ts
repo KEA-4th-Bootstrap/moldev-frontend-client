@@ -1,3 +1,5 @@
+import { reportType } from './../data/type';
+import { reportItemType } from '../data/type';
 import { authAxios, baseAxios } from './axiosInstance';
 
 export const patchPassword = async (email: string, password: string) => {
@@ -34,4 +36,8 @@ export const patchProfileImage = async (profileImage: File) => {
 
 export const patchProfile = async (nickname: string, islandName: string) => {
   return authAxios.patch('/api/member/my', { nickname, islandName });
+};
+
+export const postReport = (type: reportType, body: reportItemType) => {
+  return authAxios.post(`/api/report?type=${type}`, body);
 };
