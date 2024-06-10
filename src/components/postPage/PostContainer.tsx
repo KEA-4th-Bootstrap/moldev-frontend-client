@@ -12,6 +12,7 @@ import createImagePlugin from '@draft-js-plugins/image';
 import { getMoldevId } from '../../api/manageLocalStorage';
 import RectButton from '../common/RectButton';
 import PostRecentContainer from './PostRecentContainer';
+import ReportContainer from './ReportContainer';
 
 const imagePlugin = createImagePlugin();
 const plugins = [imagePlugin];
@@ -35,6 +36,8 @@ const PostContainer = ({
     onMoveToEdit,
     tryDeletePost,
     blockRendererFn,
+    isReportOpen,
+    setIsReportOpen,
   } = usePostContainer(moldevId, postId);
   const date = useDateFormat(post?.postInfo.lastModifiedDate);
 
@@ -114,17 +117,36 @@ const PostContainer = ({
               />
             </div>
           </div>
-          <div className="w-full flex itemcen justify-end shrink-0 gap-x-16 px-48 pt-60 pb-36 border-b border-gray-50">
-            <button className="flex items-center justify-center px-11 py-9 bg-main/10 rounded-full">
-              <Url width={24} height={24} />
-            </button>
-            <button className="flex items-center justify-center px-11 py-9 bg-main/10 rounded-full">
-              <Plane width={24} height={24} />
-            </button>
+          <div className="w-full flex items-center justify-end shrink-0 px-48 pt-60 pb-36 border-b border-gray-50">
+            {moldevId !== myMoldevId && (
+              <div
+                className="flex items-center justify-start hover:underline underline-offset-4 text-gray-600 hover:text-black cursor-pointer"
+                onClick={() => setIsReportOpen(true)}
+              >
+                신고하기
+              </div>
+            )}
+            <div className="flex grow items-center justify-end shrink-0 gap-x-16">
+              <button className="flex items-center justify-center px-11 py-9 bg-main/10 rounded-full">
+                <Url width={24} height={24} />
+              </button>
+              <button className="flex items-center justify-center px-11 py-9 bg-main/10 rounded-full">
+                <Plane width={24} height={24} />
+              </button>
+            </div>
           </div>
           <PostRecentContainer post={post} moldevId={moldevId} />
           <CommentContainer postId={postId} />
         </div>
+      )}
+      {isReportOpen && myMoldevId && (
+        <ReportContainer
+          type="POST"
+          contentId={postId}
+          reporterId={myMoldevId}
+          reporteeId={moldevId}
+          onClose={() => setIsReportOpen(false)}
+        />
       )}
     </div>
   );
